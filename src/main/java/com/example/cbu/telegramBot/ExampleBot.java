@@ -10,7 +10,6 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -59,21 +58,25 @@ class ExampleBot extends TelegramLongPollingBot {
 				sendMessage.setReplyMarkup(getKeyboard());
 			}
 
-			if (update.getMessage().getText().equals(Keyboards.OB_HAVO)) {
+			else if (update.getMessage().getText().equals(Keyboards.HAVO_SA)) {
 				sendMessage.setText(WeatherGetter.getWeather("Tashkent").toString());
 				sendMessage.setReplyMarkup(getObuna());
 			}
 
-			if (update.getMessage().getText().equals(Keyboards.KURS)) {
+			else if (update.getMessage().getText().equals(Keyboards.KURS_SA)) {
 				sendMessage.setText(CurrencyGetter.getCurrencies().get(0).toString());
 				sendMessage.setReplyMarkup(getObuna());
 			}
 
+			else if(update.getMessage().getText().equals(Keyboards.BOSH_SA)) {
+				sendMessage.setText("🏠 Bosh sahifa");
+				sendMessage.setReplyMarkup(getKeyboard());
+			}
 
-//			if (update.getMessage().getText().equals(Keyboards.OBUNA)) {
-//				sendMessage.setText("Obuna bo'lish");
-//				sendMessage.setReplyMarkup(getObuna());
-//			}
+			if (update.getMessage().getText().equals(Keyboards.OBUNA_SA)) {
+				sendMessage.setText("Siz muvaffaqiyatli Obuna bo'ldingiz!✅");
+				sendMessage.setReplyMarkup(getKeyboard());
+			}
 
 
 //			SendMessage response = new SendMessage();
@@ -93,9 +96,10 @@ class ExampleBot extends TelegramLongPollingBot {
 
 	public ReplyKeyboardMarkup getObuna() {
 		ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-		List<KeyboardRow> keyboardRows = new ArrayList<>(2);
+		List<KeyboardRow> keyboardRows = new ArrayList<>(4);
 		KeyboardRow keyboardRow = new KeyboardRow();
-		keyboardRow.add(Keyboards.OBUNA);
+		keyboardRow.add(Keyboards.OBUNA_SA);
+		keyboardRow.add(Keyboards.BOSH_SA);
 		keyboardRows.add(keyboardRow);
 
 		replyKeyboardMarkup.setKeyboard(keyboardRows);
@@ -113,8 +117,8 @@ class ExampleBot extends TelegramLongPollingBot {
 		List<KeyboardRow> keyboardRows = new ArrayList<>(4);
 		KeyboardRow keyboardRow = new KeyboardRow();
 
-		keyboardRow.add(Keyboards.KURS);
-		keyboardRow.add(Keyboards.OB_HAVO);
+		keyboardRow.add(Keyboards.KURS_SA);
+		keyboardRow.add(Keyboards.HAVO_SA);
 
 		keyboardRows.add(keyboardRow);
 
