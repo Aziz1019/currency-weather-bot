@@ -1,6 +1,6 @@
 package com.example.cbu.util;
 
-import com.example.cbu.dto.WeatherDTO;
+import com.example.cbu.model.WeatherDTO;
 import com.github.prominence.openweathermap.api.OpenWeatherMapClient;
 import com.github.prominence.openweathermap.api.enums.UnitSystem;
 import com.github.prominence.openweathermap.api.model.weather.Weather;

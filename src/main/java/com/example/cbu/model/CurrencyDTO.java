@@ -1,4 +1,4 @@
-package com.example.cbu.dto;
+package com.example.cbu.model;
 import com.example.cbu.entity.Currency;
 
 public class CurrencyDTO {

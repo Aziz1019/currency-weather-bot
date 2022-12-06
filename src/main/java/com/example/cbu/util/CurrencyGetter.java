@@ -1,6 +1,6 @@
 package com.example.cbu.util;
 
-import com.example.cbu.dto.CurrencyDTO;
+import com.example.cbu.model.CurrencyDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.client.RestTemplate;
 

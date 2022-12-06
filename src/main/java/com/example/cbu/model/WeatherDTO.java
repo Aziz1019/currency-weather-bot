@@ -1,4 +1,4 @@
-package com.example.cbu.dto;
+package com.example.cbu.model;
 
 
 import lombok.AllArgsConstructor;

@@ -1,10 +1,7 @@
 package com.example.cbu;
 
-import com.example.cbu.dto.CurrencyDTO;
-import com.example.cbu.responseModel.ResponseDto;
+import com.example.cbu.model.CurrencyDTO;
 import com.example.cbu.service.CurrencyService;
-import com.example.cbu.util.CurrencyGetter;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -16,7 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

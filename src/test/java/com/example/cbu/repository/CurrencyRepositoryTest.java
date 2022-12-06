@@ -1,6 +1,6 @@
 package com.example.cbu.repository;
 
-import com.example.cbu.dto.CurrencyDTO;
+import com.example.cbu.model.CurrencyDTO;
 import com.example.cbu.entity.Currency;
 import com.example.cbu.util.CurrencyGetter;
 import org.junit.jupiter.api.AfterEach;

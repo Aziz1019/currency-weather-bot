@@ -1,22 +1,13 @@
 package com.example.cbu.service.impl;
 
-import com.example.cbu.dto.CurrencyDTO;
-import com.example.cbu.entity.Currency;
 import com.example.cbu.repository.CurrencyRepository;
 import com.example.cbu.service.CurrencyService;
 import com.example.cbu.service.impl.enums.ServiceName;
-import com.example.cbu.util.CurrencyGetter;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
