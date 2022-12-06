@@ -34,7 +34,6 @@ class ExampleBot extends TelegramLongPollingBot {
     private final String token;
     private final String username;
 
-
     ExampleBot(UserService userService, @Value("${bot.token}") String token, @Value("${bot.username}") String username) {
         this.userService = userService;
         this.token = token;
@@ -70,59 +69,92 @@ class ExampleBot extends TelegramLongPollingBot {
                     BotState.START
             );
             userService.save(user);
-            sendMessage.setText("Ассалому Алeйкум " + message.getFrom().getFirstName() + "!");
+            sendMessage.setText("Assalomu alaykum " + message.getFrom().getFirstName() + "!");
             sendMessage.setReplyMarkup(getKeyboard());
         }
-        else if (message.getText().equals(Keyboards.HAVO_SA)) {
-            userService.findById(message.getFrom().getId()).ifPresent(user -> {
-                user.setLastBotState(BotState.STEP_4);
-                userService.save(user);
-            });
-            sendMessage.setText(WeatherGetter.getWeather("Tashkent").toString());
-            sendMessage.setReplyMarkup(getObuna());
-        }
-        else if (message.getText().equals(Keyboards.KURS_SA)) {
-            userService.findById(message.getFrom().getId()).ifPresent(user -> {
-                user.setLastBotState(BotState.STEP_1);
-                userService.save(user);
-            });
-            sendMessage.setText("Kurs kodini kiriting");
-            sendMessage.setReplyMarkup(getObuna());
-        }
-        else if (message.getText().equals("840")) {
-            List<CurrencyDTO> currencies = CurrencyGetter.getCurrencies();
-            sendMessage.setText(currencies.get(0).getCcyNm_EN() + " " + currencies.get(0).getRate());
-            sendMessage.setReplyMarkup(getObuna());
-        }
-        else if (message.getText().equals(Keyboards.BOSH_SA)) {
-            userService.findById(message.getFrom().getId()).ifPresent(user -> {
-                user.setLastBotState(BotState.STEP_7);
-                userService.save(user);
-            });
-            sendMessage.setText("🏠 Bosh sahifa");
-            sendMessage.setReplyMarkup(getKeyboard());
-        }
-        else if (message.getText().equals(Keyboards.OBUNA_SA)) {
-            Optional<UserEntity> user = userService.findById(message.getFrom().getId());
-            if (user.isPresent()) {
-                if (user.get().getLastBotState() == BotState.STEP_4) {
-                    user.get().setLastBotState(BotState.STEP_6);
-                    userService.save(user.get());
-                } else if (user.get().getLastBotState() == BotState.STEP_1) {
-                    user.get().setLastBotState(BotState.STEP_3);
-                    userService.save(user.get());
+        else if (message.hasText()) {
+            Optional<UserEntity> userEntity = userService.findById(message.getFrom().getId());
+            if (userEntity.isPresent()) {
+                switch (userEntity.get().getLastBotState()) {
+                    case START:
+                        if (message.getText().equals(Keyboards.HAVO_SA)) {
+                            userService.findById(message.getFrom().getId()).ifPresent(user -> {
+                                user.setLastBotState(BotState.STEP_4);
+                                userService.save(user);
+                            });
+                            sendMessage.setText(WeatherGetter.getWeather("Tashkent").toString());
+                            sendMessage.setReplyMarkup(getObuna());
+                        } else if (message.getText().equals(Keyboards.KURS_SA)) {
+                            userService.findById(message.getFrom().getId()).ifPresent(user -> {
+                                user.setLastBotState(BotState.STEP_1);
+                                userService.save(user);
+                            });
+                            sendMessage.setText("Kurs kodini kiriting");
+                            sendMessage.setReplyMarkup(getObuna());
+                        }
+                        else if (message.getText().equals(Keyboards.BOSH_SA)) {
+                            userService.findById(message.getFrom().getId()).ifPresent(user -> {
+                                user.setLastBotState(BotState.STEP_7);
+                                userService.save(user);
+                            });
+                            sendMessage.setText("🏠 Bosh sahifa");
+                            sendMessage.setReplyMarkup(getKeyboard());
+                        }
+                        else if (message.getText().equals(Keyboards.OBUNA_SA)) {
+                            Optional<UserEntity> user2 = userService.findById(message.getFrom().getId());
+                            if (user2.isPresent()) {
+                                if (user2.get().getLastBotState() == BotState.STEP_4) {
+                                    user2.get().setLastBotState(BotState.STEP_6);
+                                    userService.save(user2.get());
+                                } else if (user2.get().getLastBotState() == BotState.STEP_1) {
+                                    user2.get().setLastBotState(BotState.STEP_3);
+                                    userService.save(user2.get());
+                                }
+                            }
+                            sendMessage.setText("Siz muvaffaqiyatli Obuna bo'ldingiz!✅");
+                            sendMessage.setReplyMarkup(getKeyboard());
+                        }
+                        break;
+                    case STEP_1:
+                        if (message.hasText()) {
+                            userService.findById(message.getFrom().getId()).ifPresent(user -> {
+                                user.setLastBotState(BotState.STEP_2);
+                                userService.save(user);
+                            });
+                            String code = message.getText();
+                            CurrencyGetter.getCurrencies().forEach(currencyDTO -> {
+                                if (currencyDTO.getCode().equals(code)) {
+                                    sendMessage.setText(currencyDTO.toString());
+                                }
+                            });
+                            sendMessage.setReplyMarkup(getKeyboard());
+                        }
+//                         else {
+//                            CurrencyDTO currencyDTO = CurrencyGetter.getCurrency(message.getText());
+//                            sendMessage.setText(currencyDTO.toString());
+//                            sendMessage.setReplyMarkup(getCurrencyKeyboard());
+//                            user.get().setBotState(BotState.CURRENCY);
+//                            userService.save(user.get());
+//                        }
+                        break;
+//                    case STEP_4:
+//                        if (message.getText().equals("Bosh menyu")) {
+//                            sendMessage.setText("Bosh menyu");
+//                            sendMessage.setReplyMarkup(getKeyboard());
+//                            user.get().setBotState(BotState.START);
+//                            userService.save(user.get());
+//                        } else {
+//                            sendMessage.setText(WeatherGetter.getWeather(message.getText()));
+//                            sendMessage.setReplyMarkup(getWeatherKeyboard());
+//                            user.get().setBotState(BotState.WEATHER);
+//                            userService.save(user.get());
+//                        }
+//                        break;
                 }
             }
-            sendMessage.setText("Siz muvaffaqiyatli Obuna bo'ldingiz!✅");
-            sendMessage.setReplyMarkup(getKeyboard());
         }
 
-//			SendMessage response = new SendMessage();
-//			Long chatId = message.getChatId();
-//			String city = message.getText();
-//			response.setChatId(String.valueOf(chatId));
-//			String text = WeatherGetter.getWeather(city).toString();
-//			response.setText(text);
+
         try {
             execute(sendMessage);
             logger.info("Sent message \"{}\" to {}", "text", "chatId");
@@ -171,3 +203,15 @@ class ExampleBot extends TelegramLongPollingBot {
     }
 
 }
+
+
+//    Optional<UserEntity> user = userService.findById(message.getFrom().getId());
+//            if (user.isPresent()) {
+//        if (user.get().getLastBotState() == BotState.STEP_4) {
+//            user.get().setLastBotState(BotState.STEP_6);
+//            userService.save(user.get());
+//        } else if (user.get().getLastBotState() == BotState.STEP_1) {
+//            user.get().setLastBotState(BotState.STEP_3);
+//            userService.save(user.get());
+//        }
+//    }
