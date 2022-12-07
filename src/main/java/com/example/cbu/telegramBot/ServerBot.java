@@ -4,6 +4,7 @@ import com.example.cbu.entity.UserEntity;
 import com.example.cbu.entity.UserSubscription;
 import com.example.cbu.repository.UserSubscriptionRepository;
 import com.example.cbu.service.UserService;
+import com.example.cbu.service.UserSubscriptionService;
 import com.example.cbu.telegramBot.enums.BotState;
 import com.example.cbu.util.CurrencyGetter;
 import com.example.cbu.util.WeatherGetter;
@@ -29,17 +30,17 @@ import java.util.Optional;
  * This example bot is an echo bot that just repeats the messages sent to him
  */
 @Service
-class ExampleBot extends TelegramLongPollingBot {
-    private static final Logger logger = LoggerFactory.getLogger(ExampleBot.class);
+class ServerBot extends TelegramLongPollingBot {
+    private static final Logger logger = LoggerFactory.getLogger(ServerBot.class);
     private final UserService userService;
+    private final UserSubscriptionService subscriptionService;
 
-    private final UserSubscriptionRepository repository;
     private final String token;
     private final String username;
 
-    ExampleBot(UserService userService, UserSubscriptionRepository repository, @Value("${bot.token}") String token, @Value("${bot.username}") String username) {
+    ServerBot(UserService userService, UserSubscriptionService subscriptionService, @Value("${bot.token}") String token, @Value("${bot.username}") String username) {
         this.userService = userService;
-        this.repository = repository;
+        this.subscriptionService = subscriptionService;
         this.token = token;
         this.username = username;
     }
@@ -106,16 +107,16 @@ class ExampleBot extends TelegramLongPollingBot {
             Optional<UserEntity> userEntity = userService.findById(message.getFrom().getId());
 
             if (userEntity.isPresent()) {
-                Optional<UserSubscription> subscriptionId = repository.findById(userEntity.get().getUserId());
+                Optional<UserSubscription> subscriptionId = subscriptionService.findById(userEntity.get().getUserId());
                 if (userEntity.get().getLastBotState() == BotState.WEATHER) {
                     userEntity.get().setLastBotState(BotState.WEATHER_SUBSCRIPTION);
                     userService.save(userEntity.get());
                     if (subscriptionId.isPresent()) {
                         subscriptionId.get().setWeatherSubscription(true);
-                        repository.save(subscriptionId.get());
+                        subscriptionService.save(subscriptionId.get());
                     }
                     else {
-                        repository.save(new UserSubscription(
+                        subscriptionService.save(new UserSubscription(
                                 userEntity.get().getUserId(),
                                 userEntity.get().getFirstName(),
                                 userEntity.get().getLastName(),
@@ -129,10 +130,10 @@ class ExampleBot extends TelegramLongPollingBot {
                     userService.save(userEntity.get());
                     if (subscriptionId.isPresent()) {
                         subscriptionId.get().setCurrencySubscription(true);
-                        repository.save(subscriptionId.get());
+                        subscriptionService.save(subscriptionId.get());
                     }
                     else {
-                        repository.save(new UserSubscription(
+                        subscriptionService.save(new UserSubscription(
                                 true,
                                 userEntity.get().getUserId(),
                                 userEntity.get().getFirstName(),
