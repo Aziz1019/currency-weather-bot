@@ -105,15 +105,8 @@ public class CurrencyDTO {
 
     @Override
     public String toString() {
-        return "CurrencyDTO{" +
-                "id=" + id +
-                ", code='" + code + '\'' +
-                ", ccy='" + ccy + '\'' +
-                ", ccyNm_EN='" + ccyNm_EN + '\'' +
-                ", nominal='" + nominal + '\'' +
-                ", rate='" + rate + '\'' +
-                ", diff='" + diff + '\'' +
-                ", date='" + date + '\'' +
-                '}';
+        return  "O'zbek So'miga qiymati: " + rate + "\n" +
+                "O'sish: " + diff + "\n" +
+                "Sana: " + date;
     }
 }

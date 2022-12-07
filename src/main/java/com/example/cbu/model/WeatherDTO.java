@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-
 public class WeatherDTO {
     private Integer id;
     private String city;
@@ -23,5 +22,14 @@ public class WeatherDTO {
         this.humidity = humidity;
         this.windSpeed = windSpeed;
         this.date = date;
+    }
+
+    @Override
+    public String toString() {
+        return  "Shahar: " + city + "\n" +
+                "Harorat: "+ temperature + "\n" +
+                "Namlik: " + humidity + "\n" +
+                "Shamol: " + windSpeed + "\n" +
+                "Sana: " + date + "\n";
     }
 }

@@ -155,12 +155,8 @@ class ServerBot extends TelegramLongPollingBot {
                             if (message.getText().equals(Keyboards.USD)) {
                                 CurrencyGetter.getCurrencies().forEach(currencyDTO -> {
                                     if (currencyDTO.getCcy().equals(Keyboards.USD)) {
-                                        String overall = currencyDTO.getCcy() + " \uD83C\uDDFA\uD83C\uDDF8" + "\n" +
-                                                "Nominal: " + currencyDTO.getNominal() + "\n" +
-                                                "Rate: " + currencyDTO.getRate() + "\n" +
-                                                "Diff: " + currencyDTO.getDiff() + "\n" +
-                                                "Date: " + currencyDTO.getDate();
-                                        sendMessage.setText(overall);
+                                        String overall = currencyDTO.getCcy() + " \uD83C\uDDFA\uD83C\uDDF8" + "\n";
+                                        sendMessage.setText(overall + currencyDTO);
                                     }
                                 });
                                 sendMessage.setReplyMarkup(getCurrencyKeyBoard());
@@ -168,12 +164,8 @@ class ServerBot extends TelegramLongPollingBot {
                             else if (message.getText().equals(Keyboards.EUR)) {
                                 CurrencyGetter.getCurrencies().forEach(currencyDTO -> {
                                     if (currencyDTO.getCcy().equals(Keyboards.EUR)) {
-                                        String overall = currencyDTO.getCcy() + " \uD83C\uDDEA\uD83C\uDDFA" + "\n" +
-                                                "Nominal: " + currencyDTO.getNominal() + "\n" +
-                                                "Rate: " + currencyDTO.getRate() + "\n" +
-                                                "Diff: " + currencyDTO.getDiff() + "\n" +
-                                                "Date: " + currencyDTO.getDate();
-                                        sendMessage.setText(overall);
+                                        String overall = currencyDTO.getCcy() + " \uD83C\uDDEA\uD83C\uDDFA" + "\n";
+                                        sendMessage.setText(overall + currencyDTO);
                                     }
                                 });
                                 sendMessage.setReplyMarkup(getCurrencyKeyBoard());
@@ -181,12 +173,8 @@ class ServerBot extends TelegramLongPollingBot {
                             else if (message.getText().equals(Keyboards.GBP)) {
                                 CurrencyGetter.getCurrencies().forEach(currencyDTO -> {
                                     if (currencyDTO.getCcy().equals(Keyboards.GBP)) {
-                                        String overall = currencyDTO.getCcy() + " \uD83C\uDDEC\uD83C\uDDE7" + "\n" +
-                                                "Nominal: " + currencyDTO.getNominal() + "\n" +
-                                                "Rate: " + currencyDTO.getRate() + "\n" +
-                                                "Diff: " + currencyDTO.getDiff() + "\n" +
-                                                "Date: " + currencyDTO.getDate();
-                                        sendMessage.setText(overall);
+                                        String overall = currencyDTO.getCcy() + " \uD83C\uDDEC\uD83C\uDDE7" + "\n";
+                                        sendMessage.setText(overall + currencyDTO);
                                     }
                                 });
                                 sendMessage.setReplyMarkup(getCurrencyKeyBoard());
@@ -194,12 +182,8 @@ class ServerBot extends TelegramLongPollingBot {
                             else if (message.getText().equals(Keyboards.RUB)) {
                                 CurrencyGetter.getCurrencies().forEach(currencyDTO -> {
                                     if (currencyDTO.getCcy().equals(Keyboards.RUB)) {
-                                        String overall = currencyDTO.getCcy() + " \uD83C\uDDF7\uD83C\uDDFA" + "\n" +
-                                                "Nominal: " + currencyDTO.getNominal() + "\n" +
-                                                "Rate: " + currencyDTO.getRate() + "\n" +
-                                                "Diff: " + currencyDTO.getDiff() + "\n" +
-                                                "Date: " + currencyDTO.getDate();
-                                        sendMessage.setText(overall);
+                                        String overall = currencyDTO.getCcy() + " \uD83C\uDDF7\uD83C\uDDFA" + "\n";
+                                        sendMessage.setText(overall + currencyDTO);
                                     }
                                 });
                                 sendMessage.setReplyMarkup(getCurrencyKeyBoard());
