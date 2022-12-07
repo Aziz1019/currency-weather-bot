@@ -1,7 +1,8 @@
 package com.example.cbu.telegramBot;
 
 import com.example.cbu.entity.UserEntity;
-import com.example.cbu.model.CurrencyDTO;
+import com.example.cbu.entity.UserSubscription;
+import com.example.cbu.repository.UserSubscriptionRepository;
 import com.example.cbu.service.UserService;
 import com.example.cbu.telegramBot.enums.BotState;
 import com.example.cbu.util.CurrencyGetter;
@@ -31,11 +32,14 @@ import java.util.Optional;
 class ExampleBot extends TelegramLongPollingBot {
     private static final Logger logger = LoggerFactory.getLogger(ExampleBot.class);
     private final UserService userService;
+
+    private final UserSubscriptionRepository repository;
     private final String token;
     private final String username;
 
-    ExampleBot(UserService userService, @Value("${bot.token}") String token, @Value("${bot.username}") String username) {
+    ExampleBot(UserService userService, UserSubscriptionRepository repository, @Value("${bot.token}") String token, @Value("${bot.username}") String username) {
         this.userService = userService;
+        this.repository = repository;
         this.token = token;
         this.username = username;
     }
@@ -98,14 +102,44 @@ class ExampleBot extends TelegramLongPollingBot {
             sendMessage.setReplyMarkup(getKeyboard());
         }
         else if (message.getText().equals(Keyboards.OBUNA_SA)) {
+
             Optional<UserEntity> userEntity = userService.findById(message.getFrom().getId());
+
             if (userEntity.isPresent()) {
+                Optional<UserSubscription> subscriptionId = repository.findById(userEntity.get().getUserId());
                 if (userEntity.get().getLastBotState() == BotState.WEATHER) {
                     userEntity.get().setLastBotState(BotState.WEATHER_SUBSCRIPTION);
                     userService.save(userEntity.get());
-                } else if (userEntity.get().getLastBotState() == BotState.CURRENCY) {
+                    if (subscriptionId.isPresent()) {
+                        subscriptionId.get().setWeatherSubscription(true);
+                        repository.save(subscriptionId.get());
+                    }
+                    else {
+                        repository.save(new UserSubscription(
+                                userEntity.get().getUserId(),
+                                userEntity.get().getFirstName(),
+                                userEntity.get().getLastName(),
+                                userEntity.get().getUsername(),
+                                true
+                        ));
+                    }
+                }
+                else if (userEntity.get().getLastBotState() == BotState.CURRENCY) {
                     userEntity.get().setLastBotState(BotState.CURRENCY_SUBSCRIPTION);
                     userService.save(userEntity.get());
+                    if (subscriptionId.isPresent()) {
+                        subscriptionId.get().setCurrencySubscription(true);
+                        repository.save(subscriptionId.get());
+                    }
+                    else {
+                        repository.save(new UserSubscription(
+                                true,
+                                userEntity.get().getUserId(),
+                                userEntity.get().getFirstName(),
+                                userEntity.get().getLastName(),
+                                userEntity.get().getUsername()
+                        ));
+                    }
                 }
             }
             sendMessage.setText("Siz muvaffaqiyatli Obuna bo'ldingiz!✅");
@@ -127,12 +161,9 @@ class ExampleBot extends TelegramLongPollingBot {
                             sendMessage.setReplyMarkup(getObuna());
                         }
                         break;
-                    case CURRENCY_SUBSCRIPTION:
-                        break;
                     case WEATHER:
                         break;
-                    case WEATHER_SUBSCRIPTION:
-                        break;
+
 
                 }
             }
