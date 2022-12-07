@@ -83,7 +83,7 @@ class ServerBot extends TelegramLongPollingBot {
                 user.setLastBotState(BotState.WEATHER);
                 userService.save(user);
             });
-            sendMessage.setText(WeatherGetter.getWeather("Tashkent").toString());
+            sendMessage.setText("Shahar nomini kiriting");
             sendMessage.setReplyMarkup(getObuna());
         }
         else if (message.getText().equals(Keyboards.KURS_SA)) {
@@ -91,8 +91,8 @@ class ServerBot extends TelegramLongPollingBot {
                 user.setLastBotState(BotState.CURRENCY);
                 userService.save(user);
             });
-            sendMessage.setText("Kurs kodini kiriting");
-            sendMessage.setReplyMarkup(getObuna());
+            sendMessage.setText("Valyutani tanlang");
+            sendMessage.setReplyMarkup(getCurrencyKeyBoard());
         }
         else if (message.getText().equals(Keyboards.BOSH_SA)) {
             userService.findById(message.getFrom().getId()).ifPresent(user -> {
@@ -144,7 +144,7 @@ class ServerBot extends TelegramLongPollingBot {
                 }
             }
             sendMessage.setText("Siz muvaffaqiyatli Obuna bo'ldingiz!✅");
-            sendMessage.setReplyMarkup(getKeyboard());
+            sendMessage.setReplyMarkup(getMainMenuKeyboard());
         }
         else if (message.hasText()) {
             Optional<UserEntity> userEntity = userService.findById(message.getFrom().getId());
@@ -152,24 +152,70 @@ class ServerBot extends TelegramLongPollingBot {
                 switch (userEntity.get().getLastBotState()) {
                     case CURRENCY:
                         if (message.hasText()) {
-                            String code = message.getText();
-                            CurrencyGetter.getCurrencies().forEach(currencyDTO -> {
-                                currencyDTO.setCode(currencyDTO.getCode().replaceAll("\"", ""));
-                                if (currencyDTO.getCode().equals(code)) {
-                                    sendMessage.setText(currencyDTO.toString());
-                                }
-                            });
-                            sendMessage.setReplyMarkup(getObuna());
+                            if (message.getText().equals(Keyboards.USD)) {
+                                CurrencyGetter.getCurrencies().forEach(currencyDTO -> {
+                                    if (currencyDTO.getCcy().equals(Keyboards.USD)) {
+                                        String overall = currencyDTO.getCcy() + " \uD83C\uDDFA\uD83C\uDDF8" + "\n" +
+                                                "Nominal: " + currencyDTO.getNominal() + "\n" +
+                                                "Rate: " + currencyDTO.getRate() + "\n" +
+                                                "Diff: " + currencyDTO.getDiff() + "\n" +
+                                                "Date: " + currencyDTO.getDate();
+                                        sendMessage.setText(overall);
+                                    }
+                                });
+                                sendMessage.setReplyMarkup(getCurrencyKeyBoard());
+                            }
+                            else if (message.getText().equals(Keyboards.EUR)) {
+                                CurrencyGetter.getCurrencies().forEach(currencyDTO -> {
+                                    if (currencyDTO.getCcy().equals(Keyboards.EUR)) {
+                                        String overall = currencyDTO.getCcy() + " \uD83C\uDDEA\uD83C\uDDFA" + "\n" +
+                                                "Nominal: " + currencyDTO.getNominal() + "\n" +
+                                                "Rate: " + currencyDTO.getRate() + "\n" +
+                                                "Diff: " + currencyDTO.getDiff() + "\n" +
+                                                "Date: " + currencyDTO.getDate();
+                                        sendMessage.setText(overall);
+                                    }
+                                });
+                                sendMessage.setReplyMarkup(getCurrencyKeyBoard());
+                            }
+                            else if (message.getText().equals(Keyboards.GBP)) {
+                                CurrencyGetter.getCurrencies().forEach(currencyDTO -> {
+                                    if (currencyDTO.getCcy().equals(Keyboards.GBP)) {
+                                        String overall = currencyDTO.getCcy() + " \uD83C\uDDEC\uD83C\uDDE7" + "\n" +
+                                                "Nominal: " + currencyDTO.getNominal() + "\n" +
+                                                "Rate: " + currencyDTO.getRate() + "\n" +
+                                                "Diff: " + currencyDTO.getDiff() + "\n" +
+                                                "Date: " + currencyDTO.getDate();
+                                        sendMessage.setText(overall);
+                                    }
+                                });
+                                sendMessage.setReplyMarkup(getCurrencyKeyBoard());
+                            }
+                            else if (message.getText().equals(Keyboards.RUB)) {
+                                CurrencyGetter.getCurrencies().forEach(currencyDTO -> {
+                                    if (currencyDTO.getCcy().equals(Keyboards.RUB)) {
+                                        String overall = currencyDTO.getCcy() + " \uD83C\uDDF7\uD83C\uDDFA" + "\n" +
+                                                "Nominal: " + currencyDTO.getNominal() + "\n" +
+                                                "Rate: " + currencyDTO.getRate() + "\n" +
+                                                "Diff: " + currencyDTO.getDiff() + "\n" +
+                                                "Date: " + currencyDTO.getDate();
+                                        sendMessage.setText(overall);
+                                    }
+                                });
+                                sendMessage.setReplyMarkup(getCurrencyKeyBoard());
+                            }
                         }
                         break;
                     case WEATHER:
+                        if(message.hasText()){
+                            String city = message.getText();
+                            sendMessage.setText(WeatherGetter.getWeather(city).toString());
+                            sendMessage.setReplyMarkup(getObuna());
+                        }
                         break;
-
-
                 }
             }
         }
-
 
         try {
             execute(sendMessage);
@@ -181,9 +227,6 @@ class ServerBot extends TelegramLongPollingBot {
 
     }
 
-    private void handleCallback(CallbackQuery callbackQuery) {
-
-    }
 
     public ReplyKeyboardMarkup getObuna() {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
@@ -212,6 +255,45 @@ class ServerBot extends TelegramLongPollingBot {
         keyboardRow.add(Keyboards.HAVO_SA);
 
         keyboardRows.add(keyboardRow);
+
+        replyKeyboardMarkup.setKeyboard(keyboardRows);
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        return replyKeyboardMarkup;
+    }
+
+    public ReplyKeyboardMarkup getMainMenuKeyboard() {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboardRows = new ArrayList<>(2);
+        KeyboardRow keyboardRow = new KeyboardRow();
+
+        keyboardRow.add(Keyboards.BOSH_SA);
+        keyboardRows.add(keyboardRow);
+        replyKeyboardMarkup.setKeyboard(keyboardRows);
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        return replyKeyboardMarkup;
+    }
+
+    public ReplyKeyboardMarkup getCurrencyKeyBoard(){
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboardRows = new ArrayList<>(12);
+
+        KeyboardRow keyboardRow = new KeyboardRow();
+        keyboardRow.add(Keyboards.USD);
+        keyboardRow.add(Keyboards.EUR);
+
+
+        KeyboardRow keyboardRow1 = new KeyboardRow();
+        keyboardRow1.add(Keyboards.GBP);
+        keyboardRow1.add(Keyboards.RUB);
+
+        KeyboardRow keyboardRow2 = new KeyboardRow();
+        keyboardRow2.add(Keyboards.OBUNA_SA);
+        keyboardRow2.add(Keyboards.BOSH_SA);
+
+
+        keyboardRows.add(keyboardRow);
+        keyboardRows.add(keyboardRow1);
+        keyboardRows.add(keyboardRow2);
 
         replyKeyboardMarkup.setKeyboard(keyboardRows);
         replyKeyboardMarkup.setResizeKeyboard(true);

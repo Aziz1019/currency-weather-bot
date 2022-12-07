@@ -27,13 +27,13 @@ public class CurrencyGetter {
         for (int i = 0; i < data.size(); i++) {
             CurrencyDTO currencyDTO = new CurrencyDTO();
             currencyDTO.setId(data.get(i).get(0).split(":")[1]);
-            currencyDTO.setCode(data.get(i).get(1).split(":")[1]);
-            currencyDTO.setCcy(data.get(i).get(2).split(":")[1]);
-            currencyDTO.setCcyNm_EN(data.get(i).get(6).split(":")[1]);
-            currencyDTO.setNominal(data.get(i).get(7).split(":")[1]);
-            currencyDTO.setRate(data.get(i).get(8).split(":")[1]);
-            currencyDTO.setDiff(data.get(i).get(9).split(":")[1]);
-            currencyDTO.setDate(data.get(i).get(10).split(":")[1]);
+            currencyDTO.setCode(data.get(i).get(1).split(":")[1].replaceAll("\"", ""));
+            currencyDTO.setCcy(data.get(i).get(2).split(":")[1].replaceAll("\"", ""));
+            currencyDTO.setCcyNm_EN(data.get(i).get(6).split(":")[1].replaceAll("\"", ""));
+            currencyDTO.setNominal(data.get(i).get(7).split(":")[1].replaceAll("\"", ""));
+            currencyDTO.setRate(data.get(i).get(8).split(":")[1].replaceAll("\"", ""));
+            currencyDTO.setDiff(data.get(i).get(9).split(":")[1].replaceAll("\"", ""));
+            currencyDTO.setDate(data.get(i).get(10).split(":")[1].replaceAll("\"", ""));
             currencies.add(currencyDTO);
         }
         return currencies;

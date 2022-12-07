@@ -29,13 +29,13 @@ public class CurrencyDTO {
     public static Currency toEntity(CurrencyDTO currency) {
         return new Currency(
                 Integer.parseInt(currency.getId()),
-                Integer.parseInt(currency.getCode().replaceAll("\"", "")),
-                currency.getCcy().replaceAll("\"", ""),
-                currency.getCcyNm_EN().replaceAll("\"", ""),
-                Integer.parseInt(currency.getNominal().replaceAll("\"", "")),
-                Double.parseDouble(currency.getRate().replaceAll("\"", "")),
-                Double.parseDouble(currency.getDiff().replaceAll("\"", "")),
-                currency.getDate().replaceAll("\"", "")
+                Integer.parseInt(currency.getCode()),
+                currency.getCcy(),
+                currency.getCcyNm_EN(),
+                Integer.parseInt(currency.getNominal()),
+                Double.parseDouble(currency.getRate()),
+                Double.parseDouble(currency.getDiff()),
+                currency.getDate()
         );
     }
 

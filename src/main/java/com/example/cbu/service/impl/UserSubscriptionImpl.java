@@ -5,10 +5,12 @@ import com.example.cbu.entity.UserSubscription;
 import com.example.cbu.repository.UserSubscriptionRepository;
 import com.example.cbu.service.UserSubscriptionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 @RequiredArgsConstructor
 public class UserSubscriptionImpl implements UserSubscriptionService {
     private final UserSubscriptionRepository repository;

@@ -13,7 +13,6 @@ public class Tester {
         List<CurrencyDTO> currencies = CurrencyGetter.getCurrencies();
 
         for (CurrencyDTO currency : currencies) {
-            currency.setCode(currency.getCode().replaceAll("\"", ""));
             System.out.println(currency);
         }
     }
