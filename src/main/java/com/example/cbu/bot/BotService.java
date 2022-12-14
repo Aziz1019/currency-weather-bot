@@ -1,4 +1,6 @@
 package com.example.cbu.bot;
+import com.example.cbu.bot.command.Command;
+import com.example.cbu.bot.command.CommandContainer;
 import com.example.cbu.bot.command.impl.*;
 import com.example.cbu.utils.keyboards.MenuKeyboard;
 import com.example.cbu.service.UserService;
@@ -14,6 +16,8 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import javax.annotation.PostConstruct;
+import java.util.HashMap;
+
 @Service
 public class BotService extends TelegramLongPollingBot {
     private static final Logger logger = LoggerFactory.getLogger(BotService.class);
@@ -31,6 +35,7 @@ public class BotService extends TelegramLongPollingBot {
         this.subscriptionService = subscriptionService;
         this.currencyHelper = currencyHelper;
     }
+
     @Override
     public String getBotToken() {
         return token;
@@ -42,45 +47,28 @@ public class BotService extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+        CommandContainer commandContainer = new CommandContainer(userService, currencyHelper, subscriptionService);
+        HashMap<String, Command> commands = commandContainer.getCommands();
         if (update.hasMessage() && update.getMessage().hasText()) {
-            handleMessage(update.getMessage());
+            handleMessage(update.getMessage(), commands, commandContainer);
         }
     }
-    private void handleMessage(Message message) {
+
+    private void handleMessage(Message message,HashMap<String, Command> commands, CommandContainer commandContainer ) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(message.getChatId().toString());
-        // Start Command
-        if(message.getText().equals("/start")){
-            new StartCommand(userService).execute(message, sendMessage);
-        }
-        // Weather Command
-        else if (message.getText().equals(MenuKeyboard.HAVO_SA)) {
-                new WeatherCommand(userService).execute(message, sendMessage);
-        }
-        // Currency Command
-        else if (message.getText().equals(MenuKeyboard.KURS_SA)) {
-            new CurrencyCommand(userService).execute(message, sendMessage);
-        }
-        // MainMenu Command
-        else if (message.getText().equals(MenuKeyboard.BOSH_SA)) {
-            new MainMenuCommand(userService).execute(message, sendMessage);
-        }
-        // Subscription Command
-        else if (message.getText().equals(MenuKeyboard.OBUNA_SA)) {
-            new SubscriptionCommand(userService, subscriptionService).execute(message, sendMessage);
-        }
-        // Switch Command
-        else if (message.hasText()) {
-            new SwitchStateCommand(userService, currencyHelper).execute(message, sendMessage);
-        }
+
+        commandContainer.defineCommandButton(message.getText(), commands, message, sendMessage);
+
         try {
             execute(sendMessage);
-            logger.info("Sent message \"{}\" to {}", "text", "chatId");
+            logger.info("Sent message \"{}\" to {}", message.getText(), message.getChatId());
         } catch (
                 TelegramApiException e) {
-            logger.error("Failed to send message \"{}\" to {} due to error: {}", "text", "text", e.getMessage());
+            logger.error("Failed to send message \"{}\" to {} due to error: {}", message.getText(), "text", e.getMessage());
         }
     }
+
     @PostConstruct
     public void start() {
         logger.info("username: {}, token: {}", username, token);

@@ -27,7 +27,7 @@ public class StartCommand implements Command {
         );
         service.save(user);
         sendMessage.setChatId(message.getChatId().toString());
-        sendMessage.setText("Assalomu alaykum, " + message.getFrom().getFirstName() + " " + message.getFrom().getLastName() + "!");
+        sendMessage.setText("Assalomu alaykum, " + message.getFrom().getFirstName() + "!");
         sendMessage.setReplyMarkup(getKeyboard());
     }
 }

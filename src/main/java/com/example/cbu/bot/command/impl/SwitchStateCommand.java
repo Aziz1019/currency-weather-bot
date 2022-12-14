@@ -22,6 +22,7 @@ public class SwitchStateCommand implements Command {
         this.userService = userService;
         this.currencyHelper = currencyHelper;
     }
+
     @Override
     public void execute(Message message, SendMessage sendMessage) {
         sendMessage.setChatId(message.getChatId().toString());
@@ -29,38 +30,19 @@ public class SwitchStateCommand implements Command {
         if (userEntity.isPresent()) {
             switch (userEntity.get().getLastBotState()) {
                 case CURRENCY:
-                    if (message.getText().equals(CurrencyKeyboard.USD)) {
-                        currencyHelper.getCurrencies().forEach(currencyDTO -> {
-                            if (currencyDTO.getCcy().equals(CurrencyKeyboard.USD)) {
-                                String overall = currencyDTO.getCcy() + " \uD83C\uDDFA\uD83C\uDDF8" + "\n";
-                                sendMessage.setText(overall + currencyDTO);
-                            }
-                        });
-                        sendMessage.setReplyMarkup(getCurrencyKeyBoard());
-                    } else if (message.getText().equals(CurrencyKeyboard.EUR)) {
-                        currencyHelper.getCurrencies().forEach(currencyDTO -> {
-                            if (currencyDTO.getCcy().equals(CurrencyKeyboard.EUR)) {
-                                String overall = currencyDTO.getCcy() + " \uD83C\uDDEA\uD83C\uDDFA" + "\n";
-                                sendMessage.setText(overall + currencyDTO);
-                            }
-                        });
-                        sendMessage.setReplyMarkup(getCurrencyKeyBoard());
-                    } else if (message.getText().equals(CurrencyKeyboard.GBP)) {
-                        currencyHelper.getCurrencies().forEach(currencyDTO -> {
-                            if (currencyDTO.getCcy().equals(CurrencyKeyboard.GBP)) {
-                                String overall = currencyDTO.getCcy() + " \uD83C\uDDEC\uD83C\uDDE7" + "\n";
-                                sendMessage.setText(overall + currencyDTO);
-                            }
-                        });
-                        sendMessage.setReplyMarkup(getCurrencyKeyBoard());
-                    } else if (message.getText().equals(CurrencyKeyboard.RUB)) {
-                        currencyHelper.getCurrencies().forEach(currencyDTO -> {
-                            if (currencyDTO.getCcy().equals(CurrencyKeyboard.RUB)) {
-                                String overall = currencyDTO.getCcy() + " \uD83C\uDDF7\uD83C\uDDFA" + "\n";
-                                sendMessage.setText(overall + currencyDTO);
-                            }
-                        });
-                        sendMessage.setReplyMarkup(getCurrencyKeyBoard());
+                    switch (message.getText()) {
+                        case CurrencyKeyboard.USD:
+                            defineCurrencyType(message.getText(), "\uD83C\uDDFA\uD83C\uDDF8", sendMessage);
+                            break;
+                        case CurrencyKeyboard.EUR:
+                            defineCurrencyType(message.getText(), "\uD83C\uDDEA\uD83C\uDDFA", sendMessage);
+                            break;
+                        case CurrencyKeyboard.GBP:
+                            defineCurrencyType(message.getText(), "\uD83C\uDDEC\uD83C\uDDE7", sendMessage);
+                            break;
+                        case CurrencyKeyboard.RUB:
+                            defineCurrencyType(message.getText(), "\uD83C\uDDF7\uD83C\uDDFA", sendMessage);
+                            break;
                     }
                     break;
                 case WEATHER:
@@ -71,5 +53,15 @@ public class SwitchStateCommand implements Command {
             }
         }
 
+    }
+
+    public void defineCurrencyType(String currencyType, String flag, SendMessage sendMessage) {
+        currencyHelper.getCurrencies().forEach(currencyDTO -> {
+            if (currencyDTO.getCcy().equals(currencyType)) {
+                String overall = currencyDTO.getCcy() + " " + flag + "\n";
+                sendMessage.setText(overall + currencyDTO);
+            }
+        });
+        sendMessage.setReplyMarkup(getCurrencyKeyBoard());
     }
 }
