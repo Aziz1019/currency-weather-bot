@@ -6,6 +6,7 @@ import com.example.cbu.helper.CurrencyHelper;
 import com.example.cbu.helper.WhetherHelper;
 import com.example.cbu.service.UserService;
 import com.example.cbu.utils.keyboards.CurrencyKeyboard;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
@@ -14,6 +15,7 @@ import java.util.Optional;
 import static com.example.cbu.helper.KeyBoardHelper.getCityKeyboard;
 import static com.example.cbu.helper.KeyBoardHelper.getCurrencyKeyBoard;
 
+@Component
 public class SwitchStateCommand implements Command {
     private final UserService userService;
     private final CurrencyHelper currencyHelper;
@@ -53,6 +55,11 @@ public class SwitchStateCommand implements Command {
             }
         }
 
+    }
+
+    @Override
+    public String getCommandName() {
+        return "switch";
     }
 
     public void defineCurrencyType(String currencyType, String flag, SendMessage sendMessage) {

@@ -1,8 +1,6 @@
 package com.example.cbu.bot;
 import com.example.cbu.bot.command.Command;
 import com.example.cbu.bot.command.CommandContainer;
-import com.example.cbu.bot.command.impl.*;
-import com.example.cbu.utils.keyboards.MenuKeyboard;
 import com.example.cbu.service.UserService;
 import com.example.cbu.service.UserSubscriptionService;
 import com.example.cbu.helper.CurrencyHelper;
@@ -17,6 +15,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
+import java.util.List;
 
 @Service
 public class BotService extends TelegramLongPollingBot {
@@ -25,15 +24,18 @@ public class BotService extends TelegramLongPollingBot {
     private final UserSubscriptionService subscriptionService;
     private final CurrencyHelper currencyHelper;
 
+    private final List<Command> commandLists;
+
     @Value("${bot.token}")
     private String token;
     @Value("${bot.username}")
     private String username;
 
-    public BotService(UserService userService, UserSubscriptionService subscriptionService, CurrencyHelper currencyHelper) {
+    public BotService(UserService userService, UserSubscriptionService subscriptionService, CurrencyHelper currencyHelper, List<Command> commandLists) {
         this.userService = userService;
         this.subscriptionService = subscriptionService;
         this.currencyHelper = currencyHelper;
+        this.commandLists = commandLists;
     }
 
     @Override
@@ -47,7 +49,7 @@ public class BotService extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        CommandContainer commandContainer = new CommandContainer(userService, currencyHelper, subscriptionService);
+        CommandContainer commandContainer = new CommandContainer(commandLists);
         HashMap<String, Command> commands = commandContainer.getCommands();
         if (update.hasMessage() && update.getMessage().hasText()) {
             handleMessage(update.getMessage(), commands, commandContainer);
