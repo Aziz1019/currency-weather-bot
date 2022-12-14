@@ -1,11 +1,11 @@
-package com.example.cbu.util;
+package com.example.cbu.helper;
 
 import com.example.cbu.model.WeatherDTO;
 import com.github.prominence.openweathermap.api.OpenWeatherMapClient;
 import com.github.prominence.openweathermap.api.enums.UnitSystem;
 import com.github.prominence.openweathermap.api.model.weather.Weather;
 
-public class WeatherGetter {
+public class WhetherHelper {
     public static WeatherDTO getWeather(String city) {
 
         OpenWeatherMapClient openWeatherClient = new OpenWeatherMapClient("0a9cf92a59f4148067c0a2b4cba62047");

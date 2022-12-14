@@ -1,10 +1,10 @@
 package com.example.cbu.service;
 
-import com.example.cbu.entity.UserEntity;
+import com.example.cbu.entity.User;
 
 import java.util.Optional;
 
 public interface UserService {
-    Optional<UserEntity> findById(Long id);
-    void save(UserEntity user);
+    Optional<User> findById(Long id);
+    Boolean save(User user);
 }

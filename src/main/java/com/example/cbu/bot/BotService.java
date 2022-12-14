@@ -1,55 +1,49 @@
-package com.example.cbu.telegramBot;
-
-import com.example.cbu.entity.UserEntity;
+package com.example.cbu.bot;
+import com.example.cbu.bot.command.Command;
+import com.example.cbu.bot.command.impl.StartCommand;
+import com.example.cbu.utils.keyboards.CurrencyKeyboard;
+import com.example.cbu.utils.keyboards.MenuKeyboard;
+import com.example.cbu.entity.User;
 import com.example.cbu.entity.UserSubscription;
-import com.example.cbu.repository.UserSubscriptionRepository;
 import com.example.cbu.service.UserService;
 import com.example.cbu.service.UserSubscriptionService;
-import com.example.cbu.telegramBot.enums.BotState;
-import com.example.cbu.util.CurrencyGetter;
-import com.example.cbu.util.WeatherGetter;
+import com.example.cbu.helper.CurrencyHelper;
+import com.example.cbu.helper.WhetherHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
-/**
- * This example bot is an echo bot that just repeats the messages sent to him
- */
+import static com.example.cbu.helper.KeyBoardHelper.*;
+
 @Service
-class ServerBot extends TelegramLongPollingBot {
-    private static final Logger logger = LoggerFactory.getLogger(ServerBot.class);
+public class BotService extends TelegramLongPollingBot {
+    public static String COMMAND_PREFIX = "/";
+    private static final Logger logger = LoggerFactory.getLogger(BotService.class);
     private final UserService userService;
     private final UserSubscriptionService subscriptionService;
+    private final CurrencyHelper currencyHelper;
+    @Value("${bot.token}")
+    private String token;
+    @Value("${bot.username}")
+    private String username;
 
-    private final String token;
-    private final String username;
-
-    ServerBot(UserService userService, UserSubscriptionService subscriptionService, @Value("${bot.token}") String token, @Value("${bot.username}") String username) {
+    public BotService(UserService userService, UserSubscriptionService subscriptionService, CurrencyHelper currencyHelper) {
         this.userService = userService;
         this.subscriptionService = subscriptionService;
-        this.token = token;
-        this.username = username;
+        this.currencyHelper = currencyHelper;
     }
-
     @Override
     public String getBotToken() {
         return token;
     }
-
     @Override
     public String getBotUsername() {
         return username;
@@ -57,36 +51,45 @@ class ServerBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasMessage()) {
+        if (update.hasMessage() && update.getMessage().hasText()) {
             handleMessage(update.getMessage());
         }
     }
-
     private void handleMessage(Message message) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(message.getChatId().toString());
-        if (message.getText().equals("/start")) {
-            UserEntity user = new UserEntity(
-                    message.getFrom().getId(),
-                    message.getFrom().getFirstName(),
-                    message.getFrom().getLastName(),
-                    message.getFrom().getUserName(),
-                    BotState.START
-            );
-            userService.save(user);
-            sendMessage.setText("Assalomu alaykum " + message.getFrom().getFirstName() + "!");
-            sendMessage.setReplyMarkup(getKeyboard());
+
+        // Start Command
+        if(message.getText().equals("/start")){
+            Command startCommand = new StartCommand(userService);
+            startCommand.execute(message, sendMessage);
         }
 
-        if (message.getText().equals(Keyboards.HAVO_SA)) {
+//        if (message.getText().equals("/start")) {
+//            User user = new User(
+//                    message.getFrom().getId(),
+//                    message.getFrom().getFirstName(),
+//                    message.getFrom().getLastName(),
+//                    message.getFrom().getUserName(),
+//                    BotState.START
+//            );
+//            userService.save(user);
+//            sendMessage.setText("Assalomu alaykum " + message.getFrom().getFirstName() + "!");
+//            sendMessage.setReplyMarkup(getKeyboard());
+//        }
+
+
+// Weather Command
+        if (message.getText().equals(MenuKeyboard.HAVO_SA)) {
             userService.findById(message.getFrom().getId()).ifPresent(user -> {
                 user.setLastBotState(BotState.WEATHER);
                 userService.save(user);
             });
-            sendMessage.setText("Shahar nomini kiriting");
-            sendMessage.setReplyMarkup(getObuna());
+            sendMessage.setText("Shahar nomini kiriting yoki tanlang");
+            sendMessage.setReplyMarkup(getCityKeyboard());
         }
-        else if (message.getText().equals(Keyboards.KURS_SA)) {
+// Currency Command
+        else if (message.getText().equals(MenuKeyboard.KURS_SA)) {
             userService.findById(message.getFrom().getId()).ifPresent(user -> {
                 user.setLastBotState(BotState.CURRENCY);
                 userService.save(user);
@@ -94,7 +97,8 @@ class ServerBot extends TelegramLongPollingBot {
             sendMessage.setText("Valyutani tanlang");
             sendMessage.setReplyMarkup(getCurrencyKeyBoard());
         }
-        else if (message.getText().equals(Keyboards.BOSH_SA)) {
+// Main Command
+        else if (message.getText().equals(MenuKeyboard.BOSH_SA)) {
             userService.findById(message.getFrom().getId()).ifPresent(user -> {
                 user.setLastBotState(BotState.MAIN_MENU);
                 userService.save(user);
@@ -102,9 +106,10 @@ class ServerBot extends TelegramLongPollingBot {
             sendMessage.setText("🏠 Bosh sahifa");
             sendMessage.setReplyMarkup(getKeyboard());
         }
-        else if (message.getText().equals(Keyboards.OBUNA_SA)) {
+// Subscription Command
+        else if (message.getText().equals(MenuKeyboard.OBUNA_SA)) {
 
-            Optional<UserEntity> userEntity = userService.findById(message.getFrom().getId());
+            Optional<User> userEntity = userService.findById(message.getFrom().getId());
 
             if (userEntity.isPresent()) {
                 Optional<UserSubscription> subscriptionId = subscriptionService.findById(userEntity.get().getUserId());
@@ -146,42 +151,44 @@ class ServerBot extends TelegramLongPollingBot {
             sendMessage.setText("Siz muvaffaqiyatli Obuna bo'ldingiz!✅");
             sendMessage.setReplyMarkup(getMainMenuKeyboard());
         }
+// Switch Command
+
         else if (message.hasText()) {
-            Optional<UserEntity> userEntity = userService.findById(message.getFrom().getId());
+            Optional<User> userEntity = userService.findById(message.getFrom().getId());
             if (userEntity.isPresent()) {
                 switch (userEntity.get().getLastBotState()) {
                     case CURRENCY:
                         if (message.hasText()) {
-                            if (message.getText().equals(Keyboards.USD)) {
-                                CurrencyGetter.getCurrencies().forEach(currencyDTO -> {
-                                    if (currencyDTO.getCcy().equals(Keyboards.USD)) {
+                            if (message.getText().equals(CurrencyKeyboard.USD)) {
+                                currencyHelper.getCurrencies().forEach(currencyDTO -> {
+                                    if (currencyDTO.getCcy().equals(CurrencyKeyboard.USD)) {
                                         String overall = currencyDTO.getCcy() + " \uD83C\uDDFA\uD83C\uDDF8" + "\n";
                                         sendMessage.setText(overall + currencyDTO);
                                     }
                                 });
                                 sendMessage.setReplyMarkup(getCurrencyKeyBoard());
                             }
-                            else if (message.getText().equals(Keyboards.EUR)) {
-                                CurrencyGetter.getCurrencies().forEach(currencyDTO -> {
-                                    if (currencyDTO.getCcy().equals(Keyboards.EUR)) {
+                            else if (message.getText().equals(CurrencyKeyboard.EUR)) {
+                                currencyHelper.getCurrencies().forEach(currencyDTO -> {
+                                    if (currencyDTO.getCcy().equals(CurrencyKeyboard.EUR)) {
                                         String overall = currencyDTO.getCcy() + " \uD83C\uDDEA\uD83C\uDDFA" + "\n";
                                         sendMessage.setText(overall + currencyDTO);
                                     }
                                 });
                                 sendMessage.setReplyMarkup(getCurrencyKeyBoard());
                             }
-                            else if (message.getText().equals(Keyboards.GBP)) {
-                                CurrencyGetter.getCurrencies().forEach(currencyDTO -> {
-                                    if (currencyDTO.getCcy().equals(Keyboards.GBP)) {
+                            else if (message.getText().equals(CurrencyKeyboard.GBP)) {
+                                currencyHelper.getCurrencies().forEach(currencyDTO -> {
+                                    if (currencyDTO.getCcy().equals(CurrencyKeyboard.GBP)) {
                                         String overall = currencyDTO.getCcy() + " \uD83C\uDDEC\uD83C\uDDE7" + "\n";
                                         sendMessage.setText(overall + currencyDTO);
                                     }
                                 });
                                 sendMessage.setReplyMarkup(getCurrencyKeyBoard());
                             }
-                            else if (message.getText().equals(Keyboards.RUB)) {
-                                CurrencyGetter.getCurrencies().forEach(currencyDTO -> {
-                                    if (currencyDTO.getCcy().equals(Keyboards.RUB)) {
+                            else if (message.getText().equals(CurrencyKeyboard.RUB)) {
+                                currencyHelper.getCurrencies().forEach(currencyDTO -> {
+                                    if (currencyDTO.getCcy().equals(CurrencyKeyboard.RUB)) {
                                         String overall = currencyDTO.getCcy() + " \uD83C\uDDF7\uD83C\uDDFA" + "\n";
                                         sendMessage.setText(overall + currencyDTO);
                                     }
@@ -193,14 +200,13 @@ class ServerBot extends TelegramLongPollingBot {
                     case WEATHER:
                         if(message.hasText()){
                             String city = message.getText();
-                            sendMessage.setText(WeatherGetter.getWeather(city).toString());
-                            sendMessage.setReplyMarkup(getObuna());
+                            sendMessage.setText(WhetherHelper.getWeather(city).toString());
+                            sendMessage.setReplyMarkup(getCityKeyboard());
                         }
                         break;
                 }
             }
         }
-
         try {
             execute(sendMessage);
             logger.info("Sent message \"{}\" to {}", "text", "chatId");
@@ -211,89 +217,9 @@ class ServerBot extends TelegramLongPollingBot {
 
     }
 
-
-    public ReplyKeyboardMarkup getObuna() {
-        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-        List<KeyboardRow> keyboardRows = new ArrayList<>(4);
-        KeyboardRow keyboardRow = new KeyboardRow();
-        keyboardRow.add(Keyboards.OBUNA_SA);
-        keyboardRow.add(Keyboards.BOSH_SA);
-        keyboardRows.add(keyboardRow);
-
-        replyKeyboardMarkup.setKeyboard(keyboardRows);
-        replyKeyboardMarkup.setResizeKeyboard(true);
-        return replyKeyboardMarkup;
-    }
-
     @PostConstruct
     public void start() {
         logger.info("username: {}, token: {}", username, token);
     }
 
-    public ReplyKeyboardMarkup getKeyboard() {
-        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-        List<KeyboardRow> keyboardRows = new ArrayList<>(4);
-        KeyboardRow keyboardRow = new KeyboardRow();
-
-        keyboardRow.add(Keyboards.KURS_SA);
-        keyboardRow.add(Keyboards.HAVO_SA);
-
-        keyboardRows.add(keyboardRow);
-
-        replyKeyboardMarkup.setKeyboard(keyboardRows);
-        replyKeyboardMarkup.setResizeKeyboard(true);
-        return replyKeyboardMarkup;
-    }
-
-    public ReplyKeyboardMarkup getMainMenuKeyboard() {
-        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-        List<KeyboardRow> keyboardRows = new ArrayList<>(2);
-        KeyboardRow keyboardRow = new KeyboardRow();
-
-        keyboardRow.add(Keyboards.BOSH_SA);
-        keyboardRows.add(keyboardRow);
-        replyKeyboardMarkup.setKeyboard(keyboardRows);
-        replyKeyboardMarkup.setResizeKeyboard(true);
-        return replyKeyboardMarkup;
-    }
-
-    public ReplyKeyboardMarkup getCurrencyKeyBoard(){
-        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-        List<KeyboardRow> keyboardRows = new ArrayList<>(12);
-
-        KeyboardRow keyboardRow = new KeyboardRow();
-        keyboardRow.add(Keyboards.USD);
-        keyboardRow.add(Keyboards.EUR);
-
-
-        KeyboardRow keyboardRow1 = new KeyboardRow();
-        keyboardRow1.add(Keyboards.GBP);
-        keyboardRow1.add(Keyboards.RUB);
-
-        KeyboardRow keyboardRow2 = new KeyboardRow();
-        keyboardRow2.add(Keyboards.OBUNA_SA);
-        keyboardRow2.add(Keyboards.BOSH_SA);
-
-
-        keyboardRows.add(keyboardRow);
-        keyboardRows.add(keyboardRow1);
-        keyboardRows.add(keyboardRow2);
-
-        replyKeyboardMarkup.setKeyboard(keyboardRows);
-        replyKeyboardMarkup.setResizeKeyboard(true);
-        return replyKeyboardMarkup;
-    }
-
 }
-
-
-//    Optional<UserEntity> user = userService.findById(message.getFrom().getId());
-//            if (user.isPresent()) {
-//        if (user.get().getLastBotState() == BotState.STEP_4) {
-//            user.get().setLastBotState(BotState.STEP_6);
-//            userService.save(user.get());
-//        } else if (user.get().getLastBotState() == BotState.STEP_1) {
-//            user.get().setLastBotState(BotState.STEP_3);
-//            userService.save(user.get());
-//        }
-//    }

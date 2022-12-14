@@ -1,3 +1,6 @@
 bot:
   token: 5774286154:AAFoBmm5Y7pazz9DtrG8V2nVERB6d2bFiTs
   username: weather_currency_bot
+
+currency:
+  url: https://cbu.uz/oz/arkhiv-kursov-valyut/json/

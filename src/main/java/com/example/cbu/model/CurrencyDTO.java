@@ -1,14 +1,21 @@
 package com.example.cbu.model;
-import com.example.cbu.entity.Currency;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CurrencyDTO {
     private String id;
+    @JsonProperty(value = "Code")
     private String code;
+    @JsonProperty(value = "Ccy")
     private String ccy;
+    @JsonProperty(value = "CcyNm_EN")
     private String ccyNm_EN;
+    @JsonProperty(value = "Nominal")
     private String nominal;
+    @JsonProperty("Rate")
     private String rate;
+    @JsonProperty("Diff")
     private String diff;
+    @JsonProperty("Date")
     private String date;
 
 
@@ -24,19 +31,6 @@ public class CurrencyDTO {
         this.rate = rate;
         this.diff = diff;
         this.date = date;
-    }
-
-    public static Currency toEntity(CurrencyDTO currency) {
-        return new Currency(
-                Integer.parseInt(currency.getId()),
-                Integer.parseInt(currency.getCode()),
-                currency.getCcy(),
-                currency.getCcyNm_EN(),
-                Integer.parseInt(currency.getNominal()),
-                Double.parseDouble(currency.getRate()),
-                Double.parseDouble(currency.getDiff()),
-                currency.getDate()
-        );
     }
 
     public String getId() {

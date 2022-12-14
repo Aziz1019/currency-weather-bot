@@ -1,4 +1,4 @@
-package com.example.cbu.telegramBot.enums;
+package com.example.cbu.bot;
 
 public enum BotState {
     START("start"),

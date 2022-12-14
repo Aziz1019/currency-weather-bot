@@ -1,8 +1,8 @@
 package com.example.cbu.service.impl;
 
-import com.example.cbu.entity.UserEntity;
-import com.example.cbu.repository.UserRepository;
+import com.example.cbu.entity.User;
 import com.example.cbu.service.UserService;
+import com.example.cbu.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +14,12 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public Optional<UserEntity> findById(Long id) {
+    public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
-    public void save(UserEntity user){
-       userRepository.save(user);
+    public Boolean save(User user){
+        User save = userRepository.save(user);
+        return save.getUserId() != null;
     }
 
 }
