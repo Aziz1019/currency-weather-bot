@@ -9,7 +9,6 @@ import com.example.cbu.service.UserSubscriptionService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
-
 import java.util.Optional;
 
 import static com.example.cbu.helper.KeyBoardHelper.getMainMenuKeyboard;
@@ -18,6 +17,7 @@ import static com.example.cbu.helper.KeyBoardHelper.getMainMenuKeyboard;
 public class SubscriptionCommand implements Command {
     private final UserService userService;
     private final UserSubscriptionService subscriptionService;
+
 
     public SubscriptionCommand(UserService userService, UserSubscriptionService subscriptionService) {
         this.userService = userService;

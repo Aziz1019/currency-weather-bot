@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 import static com.example.cbu.helper.KeyBoardHelper.getCityKeyboard;
@@ -29,22 +31,13 @@ public class SwitchStateCommand implements Command {
     public void execute(Message message, SendMessage sendMessage) {
         sendMessage.setChatId(message.getChatId().toString());
         Optional<User> userEntity = userService.findById(message.getFrom().getId());
-        if (userEntity.isPresent()) {
+        userEntity.ifPresent(user -> {
             switch (userEntity.get().getLastBotState()) {
                 case CURRENCY:
-                    switch (message.getText()) {
-                        case CurrencyKeyboard.USD:
-                            defineCurrencyType(message.getText(), "\uD83C\uDDFA\uD83C\uDDF8", sendMessage);
-                            break;
-                        case CurrencyKeyboard.EUR:
-                            defineCurrencyType(message.getText(), "\uD83C\uDDEA\uD83C\uDDFA", sendMessage);
-                            break;
-                        case CurrencyKeyboard.GBP:
-                            defineCurrencyType(message.getText(), "\uD83C\uDDEC\uD83C\uDDE7", sendMessage);
-                            break;
-                        case CurrencyKeyboard.RUB:
-                            defineCurrencyType(message.getText(), "\uD83C\uDDF7\uD83C\uDDFA", sendMessage);
-                            break;
+                    List<String> currencyButtons = CurrencyKeyboard.getCurrencyButtons();
+                    HashMap<String, String> flags = CurrencyKeyboard.getFlags();
+                    if (currencyButtons.contains(message.getText())) {
+                        defineCurrencyType(message.getText(), flags.get(message.getText()), sendMessage);
                     }
                     break;
                 case WEATHER:
@@ -53,8 +46,7 @@ public class SwitchStateCommand implements Command {
                     sendMessage.setReplyMarkup(getCityKeyboard());
                     break;
             }
-        }
-
+        });
     }
 
     @Override

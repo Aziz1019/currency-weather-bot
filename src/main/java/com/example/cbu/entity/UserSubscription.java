@@ -17,9 +17,9 @@ public class UserSubscription {
     private String firstName;
     private String lastName;
     private String username;
-
+    private String cityName;
+    private String currencyCode;
     private Boolean currencySubscription = false;
-
     private Boolean weatherSubscription = false;
 
     public UserSubscription(Long userId, String firstName, String lastName, String username) {
