@@ -23,12 +23,15 @@ public class SwitchStateCommand implements Command {
     private final UserService userService;
     private final CurrencyHelper currencyHelper;
     private final UserSubscriptionService subscriptionService;
+    private final SendToSubscribersCommand sendToSubscribersCommand;
 
-    public SwitchStateCommand(UserService userService, CurrencyHelper currencyHelper, UserSubscriptionService subscriptionService) {
+    public SwitchStateCommand(UserService userService, CurrencyHelper currencyHelper, UserSubscriptionService subscriptionService, SendToSubscribersCommand sendToSubscribersCommand) {
         this.userService = userService;
         this.currencyHelper = currencyHelper;
         this.subscriptionService = subscriptionService;
+        this.sendToSubscribersCommand = sendToSubscribersCommand;
     }
+
 
     @Override
     public void execute(Message message, SendMessage sendMessage) {
@@ -36,65 +39,70 @@ public class SwitchStateCommand implements Command {
         Optional<User> userEntity = userService.findById(message.getFrom().getId());
         userEntity.ifPresent(user -> {
             Optional<UserSubscription> subscriptionId = subscriptionService.findById(userEntity.get().getUserId());
-
             switch (userEntity.get().getLastBotState()) {
-                case CURRENCY:
-                    List<String> currencyButtons = CurrencyKeyboard.getCurrencyButtons();
-                    HashMap<String, String> flags = CurrencyKeyboard.getFlags();
-                    if (currencyButtons.contains(message.getText())) {
-                        defineCurrencyType(message.getText(), flags.get(message.getText()), sendMessage);
-                    }
-                    break;
-                case WEATHER:
-                    String city = message.getText();
-                    sendMessage.setText(WhetherHelper.getWeather(city).toString());
-                    sendMessage.setReplyMarkup(getCityKeyboard());
-                    break;
-                case WEATHER_SUBSCRIPTION:
-                    String cityName = message.getText();
-                    if (subscriptionId.isPresent()) {
-                        subscriptionId.get().setWeatherSubscription(true);
-                        subscriptionId.get().setCityName(cityName);
-                        subscriptionService.save(subscriptionId.get());
-                    } else {
-                        subscriptionService.save(new UserSubscription(
-                                userEntity.get().getUserId(),
-                                userEntity.get().getFirstName(),
-                                userEntity.get().getLastName(),
-                                userEntity.get().getUsername(),
-                                cityName,
-                                true
-                        ));
-                    }
-                    sendMessage.setText("Ob-havo obuna bo'lish uchun tanlangan shahar: " + cityName);
-                    sendMessage.setReplyMarkup(getMainMenuKeyboard());
-                    break;
-                case CURRENCY_SUBSCRIPTION:
-                    String currencyCode = message.getText();
-                    if (subscriptionId.isPresent()) {
-                        subscriptionId.get().setCurrencySubscription(true);
-                        subscriptionId.get().setCurrencyCode(currencyCode);
-                        subscriptionService.save(subscriptionId.get());
-                    } else {
-                        subscriptionService.save(new UserSubscription(
-                                true,
-                                userEntity.get().getUserId(),
-                                userEntity.get().getFirstName(),
-                                userEntity.get().getLastName(),
-                                userEntity.get().getUsername(),
-                                currencyCode
-                        ));
-                    }
-                    sendMessage.setText("Valyuta kursi obuna bo'lish uchun tanlangan valyuta: " + currencyCode);
-                    sendMessage.setReplyMarkup(getMainMenuKeyboard());
-                    break;
+                case CURRENCY -> executeCurrencyCommand(message, sendMessage);
+                case WEATHER -> executeWeatherCommand(message, sendMessage);
+                case WEATHER_SUBSCRIPTION -> executeWeatherSubscription(sendMessage, message, subscriptionId, userEntity);
+                case CURRENCY_SUBSCRIPTION -> executeCurrencySubscription(sendMessage, message, subscriptionId, userEntity);
             }
         });
+
+//        sendToSubscribersCommand.execute(message, sendMessage); Figure out where to put it best!
     }
 
-    @Override
-    public String getCommandName() {
-        return "switch";
+
+    public void executeCurrencyCommand(Message message, SendMessage sendMessage){
+        List<String> currencyButtons = CurrencyKeyboard.getCurrencyButtons();
+        HashMap<String, String> flags = CurrencyKeyboard.getFlags();
+        if (currencyButtons.contains(message.getText())) {
+            defineCurrencyType(message.getText(), flags.get(message.getText()), sendMessage);
+        }
+    }
+
+    private void executeCurrencySubscription(SendMessage sendMessage, Message message, Optional<UserSubscription> subscriptionId, Optional<User> userEntity) {
+        String currencyCode = message.getText();
+        if (subscriptionId.isPresent()) {
+            subscriptionId.get().setCurrencySubscription(true);
+            subscriptionId.get().setCurrencyCode(currencyCode);
+            subscriptionService.save(subscriptionId.get());
+        } else {
+            subscriptionService.save(new UserSubscription(
+                    true,
+                    userEntity.get().getUserId(),
+                    userEntity.get().getFirstName(),
+                    userEntity.get().getLastName(),
+                    userEntity.get().getUsername(),
+                    currencyCode
+            ));
+        }
+        sendMessage.setText("Valyuta kursi obuna bo'lish uchun tanlangan valyuta: " + currencyCode);
+        sendMessage.setReplyMarkup(getMainMenuKeyboard());
+    }
+
+    private void executeWeatherSubscription(SendMessage sendMessage, Message message, Optional<UserSubscription> subscriptionId, Optional<User> userEntity)  {
+        String cityName = message.getText();
+        if (subscriptionId.isPresent()) {
+            subscriptionId.get().setWeatherSubscription(true);
+            subscriptionId.get().setCityName(cityName);
+            subscriptionService.save(subscriptionId.get());
+        } else {
+            subscriptionService.save(new UserSubscription(
+                    userEntity.get().getUserId(),
+                    userEntity.get().getFirstName(),
+                    userEntity.get().getLastName(),
+                    userEntity.get().getUsername(),
+                    cityName,
+                    true
+            ));
+        }
+        sendMessage.setText("Ob-havo obuna bo'lish uchun tanlangan shahar: " + cityName);
+        sendMessage.setReplyMarkup(getMainMenuKeyboard());
+    }
+
+    private void executeWeatherCommand(Message message, SendMessage sendMessage) {
+        String city = message.getText();
+        sendMessage.setText(WhetherHelper.getWeather(city).toString());
+        sendMessage.setReplyMarkup(getCityKeyboard());
     }
 
     public void defineCurrencyType(String currencyType, String flag, SendMessage sendMessage) {
@@ -105,5 +113,10 @@ public class SwitchStateCommand implements Command {
             }
         });
         sendMessage.setReplyMarkup(getCurrencyKeyBoard());
+    }
+
+    @Override
+    public String getCommandName() {
+        return "switch";
     }
 }
