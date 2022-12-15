@@ -22,7 +22,7 @@ public class CurrencyHelper {
                 url,
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<List<CurrencyDTO>>() {}
+                new ParameterizedTypeReference<>() {}
         );
         return response.getBody();
     }

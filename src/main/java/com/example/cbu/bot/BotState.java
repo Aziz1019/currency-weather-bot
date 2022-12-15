@@ -3,11 +3,10 @@ package com.example.cbu.bot;
 public enum BotState {
     START("start"),
     CURRENCY("Currency"),
-    CURRENCY_SUBSCRIPTION("Currency CurrencySubscription"),
+    CURRENCY_SUBSCRIPTION("Currency Subscription"),
     WEATHER("Weather"),
-    WEATHER_SUBSCRIPTION("Weather CurrencySubscription"),
+    WEATHER_SUBSCRIPTION("Weather Subscription"),
     MAIN_MENU("Return to main menu");
-
 
     private final String state;
 

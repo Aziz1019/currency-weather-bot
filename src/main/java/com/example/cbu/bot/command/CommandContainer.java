@@ -1,8 +1,5 @@
 package com.example.cbu.bot.command;
 
-import com.example.cbu.helper.CurrencyHelper;
-import com.example.cbu.service.UserService;
-import com.example.cbu.service.UserSubscriptionService;
 import com.example.cbu.utils.keyboards.MenuKeyboard;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
