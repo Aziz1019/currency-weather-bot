@@ -1,22 +1,18 @@
 package com.example.cbu.bot.command.impl;
-
 import com.example.cbu.bot.BotState;
 import com.example.cbu.bot.command.Command;
 import com.example.cbu.service.UserService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
-
 import static com.example.cbu.helper.KeyBoardHelper.getCityKeyboard;
 
 @Component
 public class WeatherCommand implements Command {
     private final UserService userService;
-
     public WeatherCommand(UserService userService) {
         this.userService = userService;
     }
-
     @Override
     public void execute(Message message, SendMessage sendMessage) {
         sendMessage.setChatId(message.getChatId().toString());
@@ -27,7 +23,6 @@ public class WeatherCommand implements Command {
         sendMessage.setText("Shahar nomini kiriting yoki tanlang");
         sendMessage.setReplyMarkup(getCityKeyboard());
     }
-
     @Override
     public String getCommandName() {
         return "weather";

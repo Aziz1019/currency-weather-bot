@@ -32,7 +32,6 @@ public class SwitchStateCommand implements Command {
         this.sendToSubscribersCommand = sendToSubscribersCommand;
     }
 
-
     @Override
     public void execute(Message message, SendMessage sendMessage) {
         sendMessage.setChatId(message.getChatId().toString());

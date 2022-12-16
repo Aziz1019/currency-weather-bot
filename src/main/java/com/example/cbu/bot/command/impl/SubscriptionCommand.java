@@ -27,18 +27,18 @@ public class SubscriptionCommand implements Command {
         Optional<User> userEntity = userService.findById(message.getFrom().getId());
         if (userEntity.isPresent()) {
             switch (userEntity.get().getLastBotState()) {
-                case WEATHER:
+                case WEATHER -> {
                     userEntity.get().setLastBotState(BotState.WEATHER_SUBSCRIPTION);
                     userService.save(userEntity.get());
                     sendMessage.setText("Ob-havo ga obuna bo'lish uchun quyidagi shaharlardan birini tanlang");
                     sendMessage.setReplyMarkup(KeyBoardHelper.getCitySubKeyboard());
-                    break;
-                case CURRENCY:
+                }
+                case CURRENCY -> {
                     userEntity.get().setLastBotState(BotState.CURRENCY_SUBSCRIPTION);
                     userService.save(userEntity.get());
                     sendMessage.setText("Valyuta kursiga obuna bo'lish uchun quyidagi valyutalardan birini tanlang");
                     sendMessage.setReplyMarkup(KeyBoardHelper.getCurrencySubKeyboard());
-                    break;
+                }
             }
         }
     }
