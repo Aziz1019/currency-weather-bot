@@ -20,7 +20,10 @@ import java.util.List;
 public class SubscriptionSender {
     private final UserSubscriptionService subscriptionService;
     private final CurrencyHelper currencyHelper;
-    private final String crons = "0 */2 * * * *";
+
+    private final String currencyTime = "";
+
+    private final String crons = "* * * * * *";
     @Autowired
     SubscriptionFeign subscriptionFeign;
     Logger logger = LoggerFactory.getLogger(SubscriptionSender.class);
@@ -30,10 +33,12 @@ public class SubscriptionSender {
         this.subscriptionService = subscriptionService;
         this.currencyHelper = currencyHelper;
     }
+
     @Scheduled(cron = crons)
     public void executeCurrency() {
         List<UserSubscription> allByCurrencySubscriptionIsTrue = subscriptionService.findAllByCurrencySubscriptionIsTrue();
         for (UserSubscription userSubscription : allByCurrencySubscriptionIsTrue) {
+            String currencyTime = userSubscription.getCurrencyTime();
             sendMessage.setChatId(userSubscription.getUserId().toString());
             String currencyCode = userSubscription.getCurrencyCode();
             List<String> currencyButtons = CurrencyKeyboard.getCurrencyButtons();

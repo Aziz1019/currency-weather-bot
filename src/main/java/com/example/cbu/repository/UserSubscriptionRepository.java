@@ -12,4 +12,5 @@ public interface UserSubscriptionRepository extends JpaRepository<UserSubscripti
 
    List<UserSubscription> findAllByWeatherSubscriptionIsTrue();
 
+
 }

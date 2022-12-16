@@ -68,43 +68,27 @@ public class SwitchStatesCommand implements Command {
     }
 
     private void executeCurrencySubscription(SendMessage sendMessage, Message message, Optional<UserSubscription> subscriptionId, Optional<User> userEntity) {
-        String currencyCode = message.getText();
+        String currencyFTime = message.getText();
+        String currencyTime = currencyFTime.substring(0, currencyFTime.indexOf(":"));
         if (subscriptionId.isPresent()) {
             subscriptionId.get().setCurrencySubscription(true);
-            subscriptionId.get().setCurrencyCode(currencyCode);
+            subscriptionId.get().setCurrencyTime(currencyTime);
             subscriptionService.save(subscriptionId.get());
-        } else {
-            subscriptionService.save(new UserSubscription(
-                    true,
-                    userEntity.get().getUserId(),
-                    userEntity.get().getFirstName(),
-                    userEntity.get().getLastName(),
-                    userEntity.get().getUsername(),
-                    currencyCode
-            ));
+            sendMessage.setText("Tanlangan vaqt: " + currencyFTime);
+            sendMessage.setReplyMarkup(getMainMenuKeyboard());
         }
-        sendMessage.setText("Valyuta kursi obuna bo'lish uchun tanlangan valyuta: " + currencyCode);
-        sendMessage.setReplyMarkup(getMainMenuKeyboard());
     }
 
-    private void executeWeatherSubscription(SendMessage sendMessage, Message message, Optional<UserSubscription> subscriptionId, Optional<User> userEntity)  {
-        String cityName = message.getText();
+    private void executeWeatherSubscription(SendMessage sendMessage, Message message, Optional<UserSubscription> subscriptionId, Optional<User> userEntity) {
+        String weatherFTime = message.getText();
+        String weatherTime = weatherFTime.substring(0, weatherFTime.indexOf(":"));
         if (subscriptionId.isPresent()) {
             subscriptionId.get().setWeatherSubscription(true);
-            subscriptionId.get().setCityName(cityName);
+            subscriptionId.get().setWeatherTime(weatherTime);
             subscriptionService.save(subscriptionId.get());
-        } else {
-            subscriptionService.save(new UserSubscription(
-                    userEntity.get().getUserId(),
-                    userEntity.get().getFirstName(),
-                    userEntity.get().getLastName(),
-                    userEntity.get().getUsername(),
-                    cityName,
-                    true
-            ));
+            sendMessage.setText("Tanlangan vaqt: " + weatherFTime);
+            sendMessage.setReplyMarkup(getMainMenuKeyboard());
         }
-        sendMessage.setText("Ob-havo obuna bo'lish uchun tanlangan shahar: " + cityName);
-        sendMessage.setReplyMarkup(getMainMenuKeyboard());
     }
 
     private void executeWeatherCommand(Message message, SendMessage sendMessage) {
