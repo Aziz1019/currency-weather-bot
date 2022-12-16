@@ -1,29 +1,37 @@
 package com.example.cbu.bot.command.impl;
-import com.example.cbu.bot.command.Command;
+import com.example.cbu.bot.SubscriptionFeign;
 import com.example.cbu.entity.UserSubscription;
 import com.example.cbu.helper.CurrencyHelper;
-import com.example.cbu.service.UserService;
+import com.example.cbu.helper.WheatherHelper;
 import com.example.cbu.service.UserSubscriptionService;
 import com.example.cbu.utils.keyboards.CurrencyKeyboard;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import java.util.HashMap;
 import java.util.List;
 
 @Component
-public class SendToSubscribersCommand implements Command {
-    private final UserService userService;
+@EnableScheduling
+public class SubscriptionSender {
     private final UserSubscriptionService subscriptionService;
-
     private final CurrencyHelper currencyHelper;
-    public SendToSubscribersCommand(UserService userService, UserSubscriptionService subscriptionService, CurrencyHelper currencyHelper) {
-        this.userService = userService;
+    private final String crons = "* * * * * *";
+    @Autowired
+    SubscriptionFeign subscriptionFeign;
+    Logger logger = LoggerFactory.getLogger(TestClass.class);
+    SendMessage sendMessage = new SendMessage();
+
+    public SubscriptionSender(UserSubscriptionService subscriptionService, CurrencyHelper currencyHelper) {
         this.subscriptionService = subscriptionService;
         this.currencyHelper = currencyHelper;
     }
-    @Override
-    public void execute(Message message, SendMessage sendMessage) {
+    @Scheduled(cron = crons)
+    public void executeCurrency() {
         List<UserSubscription> allByCurrencySubscriptionIsTrue = subscriptionService.findAllByCurrencySubscriptionIsTrue();
         for (UserSubscription userSubscription : allByCurrencySubscriptionIsTrue) {
             sendMessage.setChatId(userSubscription.getUserId().toString());
@@ -34,10 +42,19 @@ public class SendToSubscribersCommand implements Command {
                 defineCurrencyType(currencyCode, flags.get(currencyCode), sendMessage);
             }
         }
+        subscriptionFeign.sendMessage(sendMessage);
+        logger.info("\nLogging: " + sendMessage.getText());
     }
-    @Override
-    public String getCommandName() {
-        return "notification-sender";
+
+    @Scheduled(cron = crons)
+    public void executeWeather() {
+        List<UserSubscription> allByWeatherSubscriptionIsTrue = subscriptionService.findAllByWeatherSubscriptionIsTrue();
+        for (UserSubscription userSubscription : allByWeatherSubscriptionIsTrue) {
+            sendMessage.setChatId(userSubscription.getUserId().toString());
+            sendMessage.setText(WheatherHelper.getWeather(userSubscription.getCityName()).toString());
+        }
+        subscriptionFeign.sendMessage(sendMessage);
+        logger.info("\nLogging: " + sendMessage.getText());
     }
 
     public void defineCurrencyType(String currencyType, String flag, SendMessage sendMessage) {
@@ -48,4 +65,5 @@ public class SendToSubscribersCommand implements Command {
             }
         });
     }
+
 }

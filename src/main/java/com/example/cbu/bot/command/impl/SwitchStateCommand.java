@@ -4,7 +4,7 @@ import com.example.cbu.bot.command.Command;
 import com.example.cbu.entity.User;
 import com.example.cbu.entity.UserSubscription;
 import com.example.cbu.helper.CurrencyHelper;
-import com.example.cbu.helper.WhetherHelper;
+import com.example.cbu.helper.WheatherHelper;
 import com.example.cbu.service.UserService;
 import com.example.cbu.service.UserSubscriptionService;
 import com.example.cbu.utils.keyboards.CurrencyKeyboard;
@@ -23,13 +23,11 @@ public class SwitchStateCommand implements Command {
     private final UserService userService;
     private final CurrencyHelper currencyHelper;
     private final UserSubscriptionService subscriptionService;
-    private final SendToSubscribersCommand sendToSubscribersCommand;
 
-    public SwitchStateCommand(UserService userService, CurrencyHelper currencyHelper, UserSubscriptionService subscriptionService, SendToSubscribersCommand sendToSubscribersCommand) {
+    public SwitchStateCommand(UserService userService, CurrencyHelper currencyHelper, UserSubscriptionService subscriptionService, SubscriptionSender sendToSubscribersCommand) {
         this.userService = userService;
         this.currencyHelper = currencyHelper;
         this.subscriptionService = subscriptionService;
-        this.sendToSubscribersCommand = sendToSubscribersCommand;
     }
 
     @Override
@@ -45,10 +43,7 @@ public class SwitchStateCommand implements Command {
                 case CURRENCY_SUBSCRIPTION -> executeCurrencySubscription(sendMessage, message, subscriptionId, userEntity);
             }
         });
-
-//        sendToSubscribersCommand.execute(message, sendMessage); Figure out where to put it best!
     }
-
 
     public void executeCurrencyCommand(Message message, SendMessage sendMessage){
         List<String> currencyButtons = CurrencyKeyboard.getCurrencyButtons();
@@ -100,7 +95,7 @@ public class SwitchStateCommand implements Command {
 
     private void executeWeatherCommand(Message message, SendMessage sendMessage) {
         String city = message.getText();
-        sendMessage.setText(WhetherHelper.getWeather(city).toString());
+        sendMessage.setText(WheatherHelper.getWeather(city).toString());
         sendMessage.setReplyMarkup(getCityKeyboard());
     }
 

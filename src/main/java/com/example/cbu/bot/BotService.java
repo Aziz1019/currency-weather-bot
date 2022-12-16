@@ -1,6 +1,7 @@
 package com.example.cbu.bot;
 import com.example.cbu.bot.command.Command;
 import com.example.cbu.bot.command.CommandContainer;
+import com.example.cbu.bot.command.impl.SubscriptionSender;
 import com.example.cbu.service.UserService;
 import com.example.cbu.service.UserSubscriptionService;
 import com.example.cbu.helper.CurrencyHelper;
@@ -25,17 +26,18 @@ public class BotService extends TelegramLongPollingBot {
     private final CurrencyHelper currencyHelper;
 
     private final List<Command> commandLists;
-
+    private final SubscriptionSender subscriptionSender;
     @Value("${bot.token}")
     private String token;
     @Value("${bot.username}")
     private String username;
 
-    public BotService(UserService userService, UserSubscriptionService subscriptionService, CurrencyHelper currencyHelper, List<Command> commandLists) {
+    public BotService(UserService userService, UserSubscriptionService subscriptionService, CurrencyHelper currencyHelper, List<Command> commandLists, SubscriptionSender subscriptionSender) {
         this.userService = userService;
         this.subscriptionService = subscriptionService;
         this.currencyHelper = currencyHelper;
         this.commandLists = commandLists;
+        this.subscriptionSender = subscriptionSender;
     }
 
     @Override
@@ -54,6 +56,7 @@ public class BotService extends TelegramLongPollingBot {
         if (update.hasMessage() && update.getMessage().hasText()) {
             handleMessage(update.getMessage(), commands, commandContainer);
         }
+
     }
     private void handleMessage(Message message,HashMap<String, Command> commands, CommandContainer commandContainer ) {
         SendMessage sendMessage = new SendMessage();
