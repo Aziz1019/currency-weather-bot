@@ -1,4 +1,4 @@
-package com.example.cbu.bot.command.impl;
+package com.example.cbu.bot.command;
 import com.example.cbu.bot.SubscriptionFeign;
 import com.example.cbu.entity.UserSubscription;
 import com.example.cbu.helper.CurrencyHelper;
@@ -20,10 +20,10 @@ import java.util.List;
 public class SubscriptionSender {
     private final UserSubscriptionService subscriptionService;
     private final CurrencyHelper currencyHelper;
-    private final String crons = "* * * * * *";
+    private final String crons = "0 */2 * * * *";
     @Autowired
     SubscriptionFeign subscriptionFeign;
-    Logger logger = LoggerFactory.getLogger(TestClass.class);
+    Logger logger = LoggerFactory.getLogger(SubscriptionSender.class);
     SendMessage sendMessage = new SendMessage();
 
     public SubscriptionSender(UserSubscriptionService subscriptionService, CurrencyHelper currencyHelper) {

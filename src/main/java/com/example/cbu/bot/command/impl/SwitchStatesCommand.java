@@ -1,6 +1,8 @@
 package com.example.cbu.bot.command.impl;
 
 import com.example.cbu.bot.command.Command;
+import com.example.cbu.bot.command.SubscriptionSender;
+import com.example.cbu.bot.command.impl.subscription.SubscriptionCommand;
 import com.example.cbu.entity.User;
 import com.example.cbu.entity.UserSubscription;
 import com.example.cbu.helper.CurrencyHelper;
@@ -19,15 +21,17 @@ import java.util.Optional;
 import static com.example.cbu.helper.KeyBoardHelper.*;
 
 @Component
-public class SwitchStateCommand implements Command {
+public class SwitchStatesCommand implements Command {
     private final UserService userService;
     private final CurrencyHelper currencyHelper;
     private final UserSubscriptionService subscriptionService;
+    private final SubscriptionCommand subscriptionCommand;
 
-    public SwitchStateCommand(UserService userService, CurrencyHelper currencyHelper, UserSubscriptionService subscriptionService, SubscriptionSender sendToSubscribersCommand) {
+    public SwitchStatesCommand(UserService userService, CurrencyHelper currencyHelper, UserSubscriptionService subscriptionService, SubscriptionSender sendToSubscribersCommand, SubscriptionCommand subscriptionCommand) {
         this.userService = userService;
         this.currencyHelper = currencyHelper;
         this.subscriptionService = subscriptionService;
+        this.subscriptionCommand = subscriptionCommand;
     }
 
     @Override
@@ -38,11 +42,21 @@ public class SwitchStateCommand implements Command {
             Optional<UserSubscription> subscriptionId = subscriptionService.findById(userEntity.get().getUserId());
             switch (userEntity.get().getLastBotState()) {
                 case CURRENCY -> executeCurrencyCommand(message, sendMessage);
+                case CURRENCY_DAILY_SENDING_HOURS -> executeCurrencyDaily(message, sendMessage);
                 case WEATHER -> executeWeatherCommand(message, sendMessage);
+                case WEATHER_DAILY_SENDING_HOURS -> executeWeatherDaily(message, sendMessage);
                 case WEATHER_SUBSCRIPTION -> executeWeatherSubscription(sendMessage, message, subscriptionId, userEntity);
                 case CURRENCY_SUBSCRIPTION -> executeCurrencySubscription(sendMessage, message, subscriptionId, userEntity);
             }
         });
+    }
+
+    private void executeWeatherDaily(Message message, SendMessage sendMessage) {
+        subscriptionCommand.execute(message, sendMessage);
+    }
+
+    private void executeCurrencyDaily(Message message, SendMessage sendMessage) {
+        subscriptionCommand.execute(message, sendMessage);
     }
 
     public void executeCurrencyCommand(Message message, SendMessage sendMessage){

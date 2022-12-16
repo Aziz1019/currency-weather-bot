@@ -4,8 +4,10 @@ public enum BotState {
     START("start"),
     CURRENCY("Currency"),
     CURRENCY_SUBSCRIPTION("Currency Subscription"),
+    CURRENCY_DAILY_SENDING_HOURS("Daily hours for Currency"),
     WEATHER("Weather"),
     WEATHER_SUBSCRIPTION("Weather Subscription"),
+    WEATHER_DAILY_SENDING_HOURS("Daily hours for Weather"),
     MAIN_MENU("Return to main menu");
 
     private final String state;

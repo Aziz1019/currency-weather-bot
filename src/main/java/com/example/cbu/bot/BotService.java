@@ -1,7 +1,7 @@
 package com.example.cbu.bot;
 import com.example.cbu.bot.command.Command;
 import com.example.cbu.bot.command.CommandContainer;
-import com.example.cbu.bot.command.impl.SubscriptionSender;
+import com.example.cbu.bot.command.SubscriptionSender;
 import com.example.cbu.service.UserService;
 import com.example.cbu.service.UserSubscriptionService;
 import com.example.cbu.helper.CurrencyHelper;

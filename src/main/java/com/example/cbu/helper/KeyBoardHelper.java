@@ -3,6 +3,7 @@ package com.example.cbu.helper;
 import com.example.cbu.utils.keyboards.CityKeyboard;
 import com.example.cbu.utils.keyboards.CurrencyKeyboard;
 import com.example.cbu.utils.keyboards.MenuKeyboard;
+import com.example.cbu.utils.keyboards.TimerKeyboards;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
@@ -87,6 +88,7 @@ public class KeyBoardHelper {
     }
 
 
+
     public static ReplyKeyboardMarkup getCityKeyboard(){
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> cityKeyboardRows = new ArrayList<>(14);
@@ -121,16 +123,7 @@ public class KeyBoardHelper {
 
 
         cityKeyboardRows.add(keyboardRow1);
-        cityKeyboardRows.add(keyboardRow2);
-        cityKeyboardRows.add(keyboardRow3);
-        cityKeyboardRows.add(keyboardRow4);
-        cityKeyboardRows.add(keyboardRow5);
-        cityKeyboardRows.add(keyboardRow6);
-        cityKeyboardRows.add(keyboardRow7);
-
-        replyKeyboardMarkup.setKeyboard(cityKeyboardRows);
-        replyKeyboardMarkup.setResizeKeyboard(true);
-        return replyKeyboardMarkup;
+        return getReplyKeyboardMarkup(replyKeyboardMarkup, cityKeyboardRows, keyboardRow2, keyboardRow3, keyboardRow4, keyboardRow5, keyboardRow6, keyboardRow7);
     }
 
 
@@ -162,6 +155,10 @@ public class KeyBoardHelper {
         keyboardRow6.add(CityKeyboard.TASHKENT);
         keyboardRow6.add(CityKeyboard.XIVA);
 
+        return getReplyKeyboardMarkup(replyKeyboardMarkup, cityKeyboardRows, keyboardRow1, keyboardRow2, keyboardRow3, keyboardRow4, keyboardRow5, keyboardRow6);
+    }
+
+    private static ReplyKeyboardMarkup getReplyKeyboardMarkup(ReplyKeyboardMarkup replyKeyboardMarkup, List<KeyboardRow> cityKeyboardRows, KeyboardRow keyboardRow1, KeyboardRow keyboardRow2, KeyboardRow keyboardRow3, KeyboardRow keyboardRow4, KeyboardRow keyboardRow5, KeyboardRow keyboardRow6) {
         cityKeyboardRows.add(keyboardRow1);
         cityKeyboardRows.add(keyboardRow2);
         cityKeyboardRows.add(keyboardRow3);
@@ -170,6 +167,67 @@ public class KeyBoardHelper {
         cityKeyboardRows.add(keyboardRow6);
 
         replyKeyboardMarkup.setKeyboard(cityKeyboardRows);
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        return replyKeyboardMarkup;
+    }
+
+    public static ReplyKeyboardMarkup getTimeKeyboards() {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboardRows = new ArrayList<>(28);
+
+        KeyboardRow keyboardRow = new KeyboardRow();
+        keyboardRow.add(TimerKeyboards.ZERO);
+        keyboardRow.add(TimerKeyboards.ONE);
+        keyboardRow.add(TimerKeyboards.TWO);
+        keyboardRows.add(keyboardRow);
+
+        KeyboardRow keyboardRow1 = new KeyboardRow();
+        keyboardRow1.add(TimerKeyboards.THREE);
+        keyboardRow1.add(TimerKeyboards.FOUR);
+        keyboardRow1.add(TimerKeyboards.FIVE);
+        keyboardRows.add(keyboardRow1);
+
+        KeyboardRow keyboardRow2 = new KeyboardRow();
+        keyboardRow2.add(TimerKeyboards.SIX);
+        keyboardRow2.add(TimerKeyboards.SEVEN);
+        keyboardRow2.add(TimerKeyboards.EIGHT);
+        keyboardRows.add(keyboardRow2);
+
+
+        KeyboardRow keyboardRow3 = new KeyboardRow();
+        keyboardRow3.add(TimerKeyboards.NINE);
+        keyboardRow3.add(TimerKeyboards.TEN);
+        keyboardRow3.add(TimerKeyboards.ELEVEN);
+        keyboardRows.add(keyboardRow3);
+
+
+        KeyboardRow keyboardRow4 = new KeyboardRow();
+        keyboardRow4.add(TimerKeyboards.TWELVE);
+        keyboardRow4.add(TimerKeyboards.THIRTEEN);
+        keyboardRow4.add(TimerKeyboards.FOURTEEN);
+        keyboardRows.add(keyboardRow4);
+
+        KeyboardRow keyboardRow5 = new KeyboardRow();
+        keyboardRow5.add(TimerKeyboards.FIFTEEN);
+        keyboardRow5.add(TimerKeyboards.SIXTEEN);
+        keyboardRow5.add(TimerKeyboards.SEVENTEEN);
+        keyboardRows.add(keyboardRow5);
+
+
+        KeyboardRow keyboardRow6 = new KeyboardRow();
+        keyboardRow6.add(TimerKeyboards.EIGHTEEN);
+        keyboardRow6.add(TimerKeyboards.NINETEEN);
+        keyboardRow6.add(TimerKeyboards.TWENTY);
+        keyboardRows.add(keyboardRow6);
+
+        KeyboardRow keyboardRow7 = new KeyboardRow();
+        keyboardRow7.add(TimerKeyboards.TWENTY_ONE);
+        keyboardRow7.add(TimerKeyboards.TWENTY_TWO);
+        keyboardRow7.add(TimerKeyboards.TWENTY_THREE);
+        keyboardRows.add(keyboardRow7);
+
+
+        replyKeyboardMarkup.setKeyboard(keyboardRows);
         replyKeyboardMarkup.setResizeKeyboard(true);
         return replyKeyboardMarkup;
     }

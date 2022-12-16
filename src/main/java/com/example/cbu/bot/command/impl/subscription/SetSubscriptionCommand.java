@@ -1,4 +1,4 @@
-package com.example.cbu.bot.command.impl;
+package com.example.cbu.bot.command.impl.subscription;
 
 import com.example.cbu.bot.BotState;
 import com.example.cbu.bot.command.Command;
@@ -11,12 +11,11 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import java.util.Optional;
 
-
 @Component
-public class SubscriptionCommand implements Command {
+public class SetSubscriptionCommand implements Command {
     private final UserService userService;
 
-    public SubscriptionCommand(UserService userService, UserSubscriptionService subscriptionService) {
+    public SetSubscriptionCommand(UserService userService, UserSubscriptionService subscriptionService) {
         this.userService = userService;
     }
 
@@ -27,13 +26,13 @@ public class SubscriptionCommand implements Command {
         if (userEntity.isPresent()) {
             switch (userEntity.get().getLastBotState()) {
                 case WEATHER -> {
-                    userEntity.get().setLastBotState(BotState.WEATHER_SUBSCRIPTION);
+                    userEntity.get().setLastBotState(BotState.WEATHER_DAILY_SENDING_HOURS);
                     userService.save(userEntity.get());
                     sendMessage.setText("Ob-havo ga obuna bo'lish uchun quyidagi shaharlardan birini tanlang");
                     sendMessage.setReplyMarkup(KeyBoardHelper.getCitySubKeyboard());
                 }
                 case CURRENCY -> {
-                    userEntity.get().setLastBotState(BotState.CURRENCY_SUBSCRIPTION);
+                    userEntity.get().setLastBotState(BotState.CURRENCY_DAILY_SENDING_HOURS);
                     userService.save(userEntity.get());
                     sendMessage.setText("Valyuta kursiga obuna bo'lish uchun quyidagi valyutalardan birini tanlang");
                     sendMessage.setReplyMarkup(KeyBoardHelper.getCurrencySubKeyboard());
