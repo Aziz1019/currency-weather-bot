@@ -19,7 +19,7 @@ import java.util.Optional;
 
 @Component
 @EnableScheduling
-public class SubscriptionSender {
+public class SubscriptionSender implements Runnable{
     private final UserSubscriptionService subscriptionService;
     private final CurrencyHelper currencyHelper;
     @Autowired
@@ -43,7 +43,6 @@ public class SubscriptionSender {
         }
     }
 
-@Scheduled(cron = "* * * * * *")
     public void executeCurrency() {
         subscriptionFeign.sendMessage(sendMessage);
         logger.info("\nLogging: " + sendMessage.getText());
@@ -69,4 +68,8 @@ public class SubscriptionSender {
         });
     }
 
+    @Override
+    public void run() {
+
+    }
 }
