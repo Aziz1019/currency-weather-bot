@@ -1,4 +1,4 @@
-package com.example.cbu.bot.command;
+package com.example.cbu.bot.command.impl.subscription;
 
 import com.example.cbu.bot.SubscriptionFeign;
 import com.example.cbu.entity.UserSubscription;
@@ -26,7 +26,6 @@ public class SubscriptionSender {
     @Autowired
     SubscriptionFeign subscriptionFeign;
     Logger logger = LoggerFactory.getLogger(SubscriptionSender.class);
-    SendMessage sendMessage = new SendMessage();
 
     public SubscriptionSender(UserSubscriptionService subscriptionService, CurrencyHelper currencyHelper, MyScheduler scheduler) {
         this.subscriptionService = subscriptionService;
@@ -35,6 +34,7 @@ public class SubscriptionSender {
     }
 
     public void executeCurrency() {
+        SendMessage sendMessage = new SendMessage();
         List<UserSubscription> allByCurrencySubscriptionIsTrue = subscriptionService.findAllByCurrencySubscriptionIsTrue();
         for (UserSubscription userSubscription : allByCurrencySubscriptionIsTrue) {
             sendMessage.setChatId(userSubscription.getUserId().toString());
@@ -51,6 +51,7 @@ public class SubscriptionSender {
 
 
     public void executeWeather() {
+        SendMessage sendMessage = new SendMessage();
         List<UserSubscription> allByWeatherSubscriptionIsTrue = subscriptionService.findAllByWeatherSubscriptionIsTrue();
         for (UserSubscription userSubscription : allByWeatherSubscriptionIsTrue) {
             sendMessage.setChatId(userSubscription.getUserId().toString());
@@ -70,10 +71,10 @@ public class SubscriptionSender {
     }
 
     public void scheduleCurrency(String cronHour) {
-        scheduler.scheduling(this::executeCurrency, cronHour + " * * * * *");
+        scheduler.scheduling(this::executeCurrency, cronHour);
     }
 
     public void scheduleWeather(String cronHour) {
-        scheduler.scheduling(this::executeWeather, cronHour + " * * * * *");
+        scheduler.scheduling(this::executeWeather, cronHour);
     }
 }

@@ -1,7 +1,7 @@
 package com.example.cbu.bot.command.impl;
 
 import com.example.cbu.bot.command.Command;
-import com.example.cbu.bot.command.SubscriptionSender;
+import com.example.cbu.bot.command.impl.subscription.SubscriptionSender;
 import com.example.cbu.bot.command.impl.subscription.SubscriptionCommand;
 import com.example.cbu.entity.User;
 import com.example.cbu.entity.UserSubscription;
@@ -79,7 +79,7 @@ public class SwitchStatesCommand implements Command {
             sendMessage.setText("Tanlangan vaqt: " + currencyFTime);
             sendMessage.setReplyMarkup(getMainMenuKeyboard());
         }
-        notificationSender.scheduleCurrency(currencyFTime);
+        notificationSender.scheduleCurrency(currencyTime);
     }
 
     private void executeWeatherSubscription(SendMessage sendMessage, Message message, Optional<UserSubscription> subscriptionId, Optional<User> userEntity) {
@@ -92,7 +92,7 @@ public class SwitchStatesCommand implements Command {
             sendMessage.setText("Tanlangan vaqt: " + weatherFTime);
             sendMessage.setReplyMarkup(getMainMenuKeyboard());
         }
-        notificationSender.scheduleWeather(weatherFTime);
+        notificationSender.scheduleWeather(weatherTime);
     }
 
     private void executeWeatherCommand(Message message, SendMessage sendMessage) {

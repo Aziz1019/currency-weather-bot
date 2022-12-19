@@ -1,4 +1,4 @@
-package com.example.cbu.bot.command;
+package com.example.cbu.bot.command.impl.subscription;
 
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -9,13 +9,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class MyScheduler {
     private final TaskScheduler executor;
-
     public MyScheduler(TaskScheduler taskExecutor) {
         this.executor = taskExecutor;
     }
 
     public void scheduling(final Runnable task, String cron) {
-        // Schedule a task with the given cron expression
-        executor.schedule(task, new CronTrigger("*/5 * * * * MON-FRI"));
+        executor.schedule(task, new CronTrigger(cron + " * * * * *"));
     }
 }
