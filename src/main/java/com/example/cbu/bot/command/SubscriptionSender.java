@@ -17,13 +17,11 @@ import java.util.List;
 
 @Component
 @EnableScheduling
-public class SubscriptionSender {
+public class SubscriptionSender implements Runnable {
     private final UserSubscriptionService subscriptionService;
     private final CurrencyHelper currencyHelper;
 
-    private String currencyTime = "";
 
-    private final String crons = currencyTime + " * * * * *";
     @Autowired
     SubscriptionFeign subscriptionFeign;
     Logger logger = LoggerFactory.getLogger(SubscriptionSender.class);
@@ -34,7 +32,6 @@ public class SubscriptionSender {
         this.currencyHelper = currencyHelper;
     }
 
-@Scheduled(cron = crons)
     public void executeCurrency() {
         List<UserSubscription> allByCurrencySubscriptionIsTrue = subscriptionService.findAllByCurrencySubscriptionIsTrue();
         for (UserSubscription userSubscription : allByCurrencySubscriptionIsTrue) {
@@ -71,4 +68,8 @@ public class SubscriptionSender {
         });
     }
 
+    @Override
+    public void run() {
+
+    }
 }

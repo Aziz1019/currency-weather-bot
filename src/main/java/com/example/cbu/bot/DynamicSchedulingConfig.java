@@ -1,5 +1,4 @@
 //package com.example.cbu.bot;
-//
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.context.annotation.Bean;
 //import org.springframework.context.annotation.Configuration;
@@ -7,7 +6,6 @@
 //import org.springframework.scheduling.TriggerContext;
 //import org.springframework.scheduling.annotation.EnableScheduling;
 //import org.springframework.scheduling.annotation.SchedulingConfigurer;
-//
 //import java.time.Instant;
 //import java.util.Date;
 //import java.util.Optional;
@@ -18,12 +16,10 @@
 //
 //    @Autowired
 //    private TickService tickService;
-//
 //    @Bean
 //    public Executor taskExecutor() {
 //        return Executors.newSingleThreadScheduledExecutor();
 //    }
-//
 //    @Override
 //    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
 //        taskRegistrar.setScheduler(taskExecutor());
