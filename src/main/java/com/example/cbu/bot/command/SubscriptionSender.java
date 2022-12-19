@@ -1,4 +1,5 @@
 package com.example.cbu.bot.command;
+
 import com.example.cbu.bot.SubscriptionFeign;
 import com.example.cbu.entity.UserSubscription;
 import com.example.cbu.helper.CurrencyHelper;
@@ -9,33 +10,33 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+
 import java.util.HashMap;
 import java.util.List;
 
 @Component
 @EnableScheduling
-public class SubscriptionSender implements Runnable {
+public class SubscriptionSender {
     private final UserSubscriptionService subscriptionService;
     private final CurrencyHelper currencyHelper;
-
+    private final MyScheduler scheduler;
 
     @Autowired
     SubscriptionFeign subscriptionFeign;
     Logger logger = LoggerFactory.getLogger(SubscriptionSender.class);
     SendMessage sendMessage = new SendMessage();
 
-    public SubscriptionSender(UserSubscriptionService subscriptionService, CurrencyHelper currencyHelper) {
+    public SubscriptionSender(UserSubscriptionService subscriptionService, CurrencyHelper currencyHelper, MyScheduler scheduler) {
         this.subscriptionService = subscriptionService;
         this.currencyHelper = currencyHelper;
+        this.scheduler = scheduler;
     }
 
     public void executeCurrency() {
         List<UserSubscription> allByCurrencySubscriptionIsTrue = subscriptionService.findAllByCurrencySubscriptionIsTrue();
         for (UserSubscription userSubscription : allByCurrencySubscriptionIsTrue) {
-            String currencyTime = userSubscription.getCurrencyTime();
             sendMessage.setChatId(userSubscription.getUserId().toString());
             String currencyCode = userSubscription.getCurrencyCode();
             List<String> currencyButtons = CurrencyKeyboard.getCurrencyButtons();
@@ -43,9 +44,9 @@ public class SubscriptionSender implements Runnable {
             if (currencyButtons.contains(currencyCode)) {
                 defineCurrencyType(currencyCode, flags.get(currencyCode), sendMessage);
             }
+            subscriptionFeign.sendMessage(sendMessage);
+            logger.info("\nLogging: " + sendMessage.getText());
         }
-        subscriptionFeign.sendMessage(sendMessage);
-        logger.info("\nLogging: " + sendMessage.getText());
     }
 
 
@@ -68,8 +69,11 @@ public class SubscriptionSender implements Runnable {
         });
     }
 
-    @Override
-    public void run() {
+    public void scheduleCurrency(String cronHour) {
+        scheduler.scheduling(this::executeCurrency, cronHour + " * * * * *");
+    }
 
+    public void scheduleWeather(String cronHour) {
+        scheduler.scheduling(this::executeWeather, cronHour + " * * * * *");
     }
 }

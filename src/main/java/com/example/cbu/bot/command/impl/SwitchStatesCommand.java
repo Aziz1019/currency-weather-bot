@@ -26,12 +26,14 @@ public class SwitchStatesCommand implements Command {
     private final CurrencyHelper currencyHelper;
     private final UserSubscriptionService subscriptionService;
     private final SubscriptionCommand subscriptionCommand;
+    private final SubscriptionSender notificationSender;
 
-    public SwitchStatesCommand(UserService userService, CurrencyHelper currencyHelper, UserSubscriptionService subscriptionService, SubscriptionSender sendToSubscribersCommand, SubscriptionCommand subscriptionCommand) {
+    public SwitchStatesCommand(UserService userService, CurrencyHelper currencyHelper, UserSubscriptionService subscriptionService, SubscriptionSender sendToSubscribersCommand, SubscriptionCommand subscriptionCommand, SubscriptionSender notificationSender) {
         this.userService = userService;
         this.currencyHelper = currencyHelper;
         this.subscriptionService = subscriptionService;
         this.subscriptionCommand = subscriptionCommand;
+        this.notificationSender = notificationSender;
     }
 
     @Override
@@ -77,6 +79,7 @@ public class SwitchStatesCommand implements Command {
             sendMessage.setText("Tanlangan vaqt: " + currencyFTime);
             sendMessage.setReplyMarkup(getMainMenuKeyboard());
         }
+        notificationSender.scheduleCurrency(currencyFTime);
     }
 
     private void executeWeatherSubscription(SendMessage sendMessage, Message message, Optional<UserSubscription> subscriptionId, Optional<User> userEntity) {
@@ -89,6 +92,7 @@ public class SwitchStatesCommand implements Command {
             sendMessage.setText("Tanlangan vaqt: " + weatherFTime);
             sendMessage.setReplyMarkup(getMainMenuKeyboard());
         }
+        notificationSender.scheduleWeather(weatherFTime);
     }
 
     private void executeWeatherCommand(Message message, SendMessage sendMessage) {
