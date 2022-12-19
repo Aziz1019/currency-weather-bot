@@ -23,7 +23,7 @@ public class SetSubscriptionCommand implements Command {
     public void execute(Message message, SendMessage sendMessage) {
         sendMessage.setChatId(message.getChatId().toString());
         Optional<User> userEntity = userService.findById(message.getFrom().getId());
-        if (userEntity.isPresent()) {
+        userEntity.ifPresent(user -> {
             switch (userEntity.get().getLastBotState()) {
                 case WEATHER -> {
                     userEntity.get().setLastBotState(BotState.WEATHER_DAILY_SENDING_HOURS);
@@ -38,7 +38,7 @@ public class SetSubscriptionCommand implements Command {
                     sendMessage.setReplyMarkup(KeyBoardHelper.getCurrencySubKeyboard());
                 }
             }
-        }
+        });
     }
 
     @Override

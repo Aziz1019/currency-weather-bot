@@ -27,52 +27,54 @@ public class SubscriptionCommand implements Command {
     public void execute(Message message, SendMessage sendMessage) {
         sendMessage.setChatId(message.getChatId().toString());
         Optional<User> userEntity = userService.findById(message.getFrom().getId());
-        if (userEntity.isPresent()) {
+        userEntity.ifPresent(user -> {
             Optional<UserSubscription> subscriptionId = subscriptionService.findById(userEntity.get().getUserId());
             switch (userEntity.get().getLastBotState()) {
                 case WEATHER_DAILY_SENDING_HOURS -> {
-                    userEntity.get().setLastBotState(BotState.WEATHER_SUBSCRIPTION);
-                    userService.save(userEntity.get());
+                    setBotState(userEntity, BotState.WEATHER_SUBSCRIPTION);
                     String cityName = message.getText();
-                    if (subscriptionId.isPresent()) {
-                        subscriptionId.get().setCityName(cityName);
-                        subscriptionService.save(subscriptionId.get());
-                    } else {
-                        subscriptionService.save(new UserSubscription(
-                                userEntity.get().getUserId(),
-                                userEntity.get().getFirstName(),
-                                userEntity.get().getLastName(),
-                                userEntity.get().getUsername(),
-                                cityName,
-                                true
-                        ));
-                    }
+                    subscriptionId.ifPresentOrElse(userSubscription -> setCityName(subscriptionId, cityName), () -> subscriptionService.save(new UserSubscription(
+                            userEntity.get().getUserId(),
+                            userEntity.get().getFirstName(),
+                            userEntity.get().getLastName(),
+                            userEntity.get().getUsername(),
+                            cityName,
+                            true
+                    )));
                     sendMessage.setText("Har kuni ob-havo ma'lumotini olish uchun quyidagi vaqtlardan birini tanlang!");
                     sendMessage.setReplyMarkup(KeyBoardHelper.getTimeKeyboards());
                 }
                 case CURRENCY_DAILY_SENDING_HOURS -> {
-                    userEntity.get().setLastBotState(BotState.CURRENCY_SUBSCRIPTION);
-                    userService.save(userEntity.get());
-
+                    setBotState(userEntity, BotState.CURRENCY_SUBSCRIPTION);
                     String currencyCode = message.getText();
-                    if (subscriptionId.isPresent()) {
-                        subscriptionId.get().setCurrencyCode(currencyCode);
-                        subscriptionService.save(subscriptionId.get());
-                    } else {
-                        subscriptionService.save(new UserSubscription(
-                                true,
-                                userEntity.get().getUserId(),
-                                userEntity.get().getFirstName(),
-                                userEntity.get().getLastName(),
-                                userEntity.get().getUsername(),
-                                currencyCode
-                        ));
-                    }
+                    subscriptionId.ifPresentOrElse(userSubscription -> setCurrencyCode(subscriptionId, currencyCode), () -> subscriptionService.save(new UserSubscription(
+                            userEntity.get().getUserId(),
+                            userEntity.get().getFirstName(),
+                            userEntity.get().getLastName(),
+                            userEntity.get().getUsername(),
+                            currencyCode,
+                            true
+                    )));
                     sendMessage.setText("Har kuni Valyuta kursini olish uchun quyidagi vaqtlardan birini tanlang!");
                     sendMessage.setReplyMarkup(KeyBoardHelper.getTimeKeyboards());
                 }
             }
-        }
+        });
+    }
+
+    private void setCityName(Optional<UserSubscription> subscriptionId, String cityName) {
+        subscriptionId.get().setCityName(cityName);
+        subscriptionService.save(subscriptionId.get());
+    }
+
+    private void setCurrencyCode(Optional<UserSubscription> subscriptionId, String cityName) {
+        subscriptionId.get().setCityName(cityName);
+        subscriptionService.save(subscriptionId.get());
+    }
+
+    private void setBotState(Optional<User> userEntity, BotState subscriptionState) {
+        userEntity.get().setLastBotState(subscriptionState);
+        userService.save(userEntity.get());
     }
 
     @Override
