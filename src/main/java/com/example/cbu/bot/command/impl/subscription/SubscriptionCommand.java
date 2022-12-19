@@ -1,5 +1,4 @@
 package com.example.cbu.bot.command.impl.subscription;
-
 import com.example.cbu.bot.BotState;
 import com.example.cbu.bot.command.Command;
 import com.example.cbu.entity.User;
@@ -10,19 +9,16 @@ import com.example.cbu.service.UserSubscriptionService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
-
 import java.util.Optional;
 
 @Component
 public class SubscriptionCommand implements Command {
     private final UserService userService;
     private final UserSubscriptionService subscriptionService;
-
     public SubscriptionCommand(UserService userService, UserSubscriptionService subscriptionService) {
         this.userService = userService;
         this.subscriptionService = subscriptionService;
     }
-
     @Override
     public void execute(Message message, SendMessage sendMessage) {
         sendMessage.setChatId(message.getChatId().toString());
@@ -61,21 +57,18 @@ public class SubscriptionCommand implements Command {
             }
         });
     }
-
     private void setCityName(Optional<UserSubscription> subscriptionId, String cityName) {
         subscriptionId.ifPresent(userSubscription -> {
             userSubscription.setCityName(cityName);
             subscriptionService.save(userSubscription);
         });
     }
-
     private void setCurrencyCode(Optional<UserSubscription> subscriptionId, String cityName) {
         subscriptionId.ifPresent(userSubscription -> {
             userSubscription.setCurrencyCode(cityName);
             subscriptionService.save(userSubscription);
         });
     }
-
     private void setBotState(Optional<User> userEntity, BotState subscriptionState) {
         userEntity.ifPresent(user -> {
             user.setLastBotState(subscriptionState);
