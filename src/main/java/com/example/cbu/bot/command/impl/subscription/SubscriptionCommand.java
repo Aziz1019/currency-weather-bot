@@ -10,6 +10,7 @@ import com.example.cbu.service.UserSubscriptionService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
+
 import java.util.Optional;
 
 @Component
@@ -21,7 +22,6 @@ public class SubscriptionCommand implements Command {
         this.userService = userService;
         this.subscriptionService = subscriptionService;
     }
-
 
     @Override
     public void execute(Message message, SendMessage sendMessage) {
@@ -63,18 +63,24 @@ public class SubscriptionCommand implements Command {
     }
 
     private void setCityName(Optional<UserSubscription> subscriptionId, String cityName) {
-        subscriptionId.get().setCityName(cityName);
-        subscriptionService.save(subscriptionId.get());
+        subscriptionId.ifPresent(userSubscription -> {
+            userSubscription.setCityName(cityName);
+            subscriptionService.save(userSubscription);
+        });
     }
 
     private void setCurrencyCode(Optional<UserSubscription> subscriptionId, String cityName) {
-        subscriptionId.get().setCityName(cityName);
-        subscriptionService.save(subscriptionId.get());
+        subscriptionId.ifPresent(userSubscription -> {
+            userSubscription.setCurrencyCode(cityName);
+            subscriptionService.save(userSubscription);
+        });
     }
 
     private void setBotState(Optional<User> userEntity, BotState subscriptionState) {
-        userEntity.get().setLastBotState(subscriptionState);
-        userService.save(userEntity.get());
+        userEntity.ifPresent(user -> {
+            user.setLastBotState(subscriptionState);
+            userService.save(user);
+        });
     }
 
     @Override
