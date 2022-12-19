@@ -28,7 +28,7 @@ public class SwitchStatesCommand implements Command {
     private final SubscriptionCommand subscriptionCommand;
     private final SubscriptionSender notificationSender;
 
-    public SwitchStatesCommand(UserService userService, CurrencyHelper currencyHelper, UserSubscriptionService subscriptionService, SubscriptionSender sendToSubscribersCommand, SubscriptionCommand subscriptionCommand, SubscriptionSender notificationSender) {
+    public SwitchStatesCommand(UserService userService, CurrencyHelper currencyHelper, UserSubscriptionService subscriptionService, SubscriptionCommand subscriptionCommand, SubscriptionSender notificationSender) {
         this.userService = userService;
         this.currencyHelper = currencyHelper;
         this.subscriptionService = subscriptionService;
@@ -47,8 +47,8 @@ public class SwitchStatesCommand implements Command {
                 case CURRENCY_DAILY_SENDING_HOURS -> executeCurrencyDaily(message, sendMessage);
                 case WEATHER -> executeWeatherCommand(message, sendMessage);
                 case WEATHER_DAILY_SENDING_HOURS -> executeWeatherDaily(message, sendMessage);
-                case WEATHER_SUBSCRIPTION -> executeWeatherSubscription(sendMessage, message, subscriptionId, userEntity);
-                case CURRENCY_SUBSCRIPTION -> executeCurrencySubscription(sendMessage, message, subscriptionId, userEntity);
+                case WEATHER_SUBSCRIPTION -> executeWeatherSubscription(sendMessage, message, subscriptionId);
+                case CURRENCY_SUBSCRIPTION -> executeCurrencySubscription(sendMessage, message, subscriptionId);
             }
         });
     }
@@ -69,7 +69,7 @@ public class SwitchStatesCommand implements Command {
         }
     }
 
-    private void executeCurrencySubscription(SendMessage sendMessage, Message message, Optional<UserSubscription> subscriptionId, Optional<User> userEntity) {
+    private void executeCurrencySubscription(SendMessage sendMessage, Message message, Optional<UserSubscription> subscriptionId) {
         String currencyFTime = message.getText();
         String currencyTime = currencyFTime.substring(0, currencyFTime.indexOf(":"));
         if (subscriptionId.isPresent()) {
@@ -82,7 +82,7 @@ public class SwitchStatesCommand implements Command {
         notificationSender.scheduleCurrency(currencyTime);
     }
 
-    private void executeWeatherSubscription(SendMessage sendMessage, Message message, Optional<UserSubscription> subscriptionId, Optional<User> userEntity) {
+    private void executeWeatherSubscription(SendMessage sendMessage, Message message, Optional<UserSubscription> subscriptionId) {
         String weatherFTime = message.getText();
         String weatherTime = weatherFTime.substring(0, weatherFTime.indexOf(":"));
         if (subscriptionId.isPresent()) {

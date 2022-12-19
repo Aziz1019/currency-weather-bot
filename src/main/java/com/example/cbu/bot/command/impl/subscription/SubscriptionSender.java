@@ -49,7 +49,6 @@ public class SubscriptionSender {
         }
     }
 
-
     public void executeWeather() {
         SendMessage sendMessage = new SendMessage();
         List<UserSubscription> allByWeatherSubscriptionIsTrue = subscriptionService.findAllByWeatherSubscriptionIsTrue();

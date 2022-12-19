@@ -14,6 +14,6 @@ public class MyScheduler {
     }
 
     public void scheduling(final Runnable task, String cron) {
-        executor.schedule(task, new CronTrigger(cron + " * * * * *"));
+        executor.schedule(task, new CronTrigger("*/" + cron + " * * * * * "));
     }
 }
