@@ -21,9 +21,9 @@ public class SubscriptionSender {
     private final UserSubscriptionService subscriptionService;
     private final CurrencyHelper currencyHelper;
 
-    private final String currencyTime = "";
+    private String currencyTime = "";
 
-    private final String crons = "* * * * * *";
+    private final String crons = currencyTime + " * * * * *";
     @Autowired
     SubscriptionFeign subscriptionFeign;
     Logger logger = LoggerFactory.getLogger(SubscriptionSender.class);
@@ -34,7 +34,7 @@ public class SubscriptionSender {
         this.currencyHelper = currencyHelper;
     }
 
-    @Scheduled(cron = crons)
+@Scheduled(cron = crons)
     public void executeCurrency() {
         List<UserSubscription> allByCurrencySubscriptionIsTrue = subscriptionService.findAllByCurrencySubscriptionIsTrue();
         for (UserSubscription userSubscription : allByCurrencySubscriptionIsTrue) {
@@ -51,7 +51,7 @@ public class SubscriptionSender {
         logger.info("\nLogging: " + sendMessage.getText());
     }
 
-    @Scheduled(cron = crons)
+
     public void executeWeather() {
         List<UserSubscription> allByWeatherSubscriptionIsTrue = subscriptionService.findAllByWeatherSubscriptionIsTrue();
         for (UserSubscription userSubscription : allByWeatherSubscriptionIsTrue) {
