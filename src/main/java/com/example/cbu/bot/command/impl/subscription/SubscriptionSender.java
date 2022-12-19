@@ -68,12 +68,11 @@ public class SubscriptionSender {
             }
         });
     }
-
     public void scheduleCurrency(String cronHour) {
         scheduler.scheduling(this::executeCurrency, cronHour);
     }
-
     public void scheduleWeather(String cronHour) {
         scheduler.scheduling(this::executeWeather, cronHour);
     }
+
 }
