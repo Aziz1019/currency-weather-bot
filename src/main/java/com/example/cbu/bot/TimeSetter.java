@@ -4,11 +4,14 @@ package com.example.cbu.bot;
 import java.util.LinkedList;
 
 public class TimeSetter {
-    private final String Currencytime;
-    private final String Weathertime;
-    public TimeSetter(String currencytime, String weathertime) {
-        Currencytime = currencytime;
-        Weathertime = weathertime;
+    private final String currencytime;
+
+    public TimeSetter(String currencytime) {
+        this.currencytime = currencytime;
+    }
+
+    public String getCurrencytime() {
+        return currencytime;
     }
 
 }

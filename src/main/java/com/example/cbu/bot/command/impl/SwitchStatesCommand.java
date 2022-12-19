@@ -27,11 +27,14 @@ public class SwitchStatesCommand implements Command {
     private final UserSubscriptionService subscriptionService;
     private final SubscriptionCommand subscriptionCommand;
 
-    public SwitchStatesCommand(UserService userService, CurrencyHelper currencyHelper, UserSubscriptionService subscriptionService, SubscriptionSender sendToSubscribersCommand, SubscriptionCommand subscriptionCommand) {
+    private final SubscriptionSender subscriptionSender;
+
+    public SwitchStatesCommand(UserService userService, CurrencyHelper currencyHelper, UserSubscriptionService subscriptionService, SubscriptionSender sendToSubscribersCommand, SubscriptionCommand subscriptionCommand, SubscriptionSender subscriptionSender) {
         this.userService = userService;
         this.currencyHelper = currencyHelper;
         this.subscriptionService = subscriptionService;
         this.subscriptionCommand = subscriptionCommand;
+        this.subscriptionSender = subscriptionSender;
     }
 
     @Override
@@ -76,6 +79,7 @@ public class SwitchStatesCommand implements Command {
             subscriptionService.save(subscriptionId.get());
             sendMessage.setText("Tanlangan vaqt: " + currencyFTime);
             sendMessage.setReplyMarkup(getMainMenuKeyboard());
+            userEntity.ifPresent(user -> subscriptionSender.subscribed(currencyFTime, user.getUserId()));
         }
     }
 
