@@ -18,7 +18,8 @@ public class CronManager {
     protected final ApplicationEventPublisher publisher;
 
     @Value("select user_id, currency_code, currency_time, first_name from user_subscription where currency_subscription = true")
-    private String sql;
+    private String sql1;
+
     public CronManager(JdbcTemplate jdbcTemplate, ApplicationEventPublisher publisher) {
         this.jdbcTemplate = jdbcTemplate;
         this.publisher = publisher;
@@ -26,11 +27,12 @@ public class CronManager {
 
     @PostConstruct
     public void collectTasks() {
-        log.info("Sql for get tasks : {}", sql);
-        var taskList = jdbcTemplate.query(sql, new CurrencySubscriptionMapper());
+        log.info("Sql for get tasks : {}", sql1);
+        var taskList = jdbcTemplate.query(sql1, new CurrencySubscriptionMapper());
         log.info("Found all active tasks :{}", taskList);
         taskList.removeIf(task -> !CronExpression.isValidExpression(task.getCurrencyTime()));
         log.info("All valid tasks :{}", taskList);
+        publisher.publishEvent(new SchedulerEventDTO(taskList));
         publisher.publishEvent(new SchedulerEventDTO(taskList));
     }
 }
