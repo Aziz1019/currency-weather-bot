@@ -83,12 +83,12 @@ public class SwitchStatesCommand implements Command {
         String currencyTime = currencyFTime.substring(0, currencyFTime.indexOf(":"));
         if (subscriptionId.isPresent()) {
             subscriptionId.get().setCurrencySubscription(true);
-            subscriptionId.get().setCurrencyTime(currencyTime);
+            subscriptionId.get().setCurrencyTime("*/1 * * * * *");
             subscriptionService.save(subscriptionId.get());
             sendMessage.setText(getSelectedTime() + currencyFTime);
             sendMessage.setReplyMarkup(getMainMenuKeyboard());
         }
-        notificationSender.scheduleCurrency(currencyTime);
+//        notificationSender.scheduleCurrency(currencyTime);
     }
 
     private void executeWeatherSubscription(SendMessage sendMessage, Message message, Optional<UserSubscription> subscriptionId) {
@@ -96,12 +96,12 @@ public class SwitchStatesCommand implements Command {
         String weatherTime = weatherFTime.substring(0, weatherFTime.indexOf(":"));
         if (subscriptionId.isPresent()) {
             subscriptionId.get().setWeatherSubscription(true);
-            subscriptionId.get().setWeatherTime(weatherTime);
+            subscriptionId.get().setWeatherTime("*/1 * * * * *");
             subscriptionService.save(subscriptionId.get());
             sendMessage.setText(getSelectedTime() + weatherFTime);
             sendMessage.setReplyMarkup(getMainMenuKeyboard());
         }
-        notificationSender.scheduleWeather(weatherTime);
+//        notificationSender.scheduleWeather(weatherTime);
     }
 
     private void executeWeatherCommand(Message message, SendMessage sendMessage) {

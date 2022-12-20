@@ -1,7 +1,7 @@
 package com.example.cbu.bot.command.impl.subscription;
 
 import com.example.cbu.bot.SubscriptionFeign;
-import com.example.cbu.bot.scheduler.MyScheduler;
+
 import com.example.cbu.entity.UserSubscription;
 import com.example.cbu.helper.CurrencyHelper;
 import com.example.cbu.helper.WheatherHelper;
@@ -22,16 +22,15 @@ import java.util.List;
 public class SubscriptionSender {
     private final UserSubscriptionService subscriptionService;
     private final CurrencyHelper currencyHelper;
-    private final MyScheduler scheduler;
+//    private final MyScheduler scheduler;
 
     @Autowired
     SubscriptionFeign subscriptionFeign;
     Logger logger = LoggerFactory.getLogger(SubscriptionSender.class);
 
-    public SubscriptionSender(UserSubscriptionService subscriptionService, CurrencyHelper currencyHelper, MyScheduler scheduler) {
+    public SubscriptionSender(UserSubscriptionService subscriptionService, CurrencyHelper currencyHelper) {
         this.subscriptionService = subscriptionService;
         this.currencyHelper = currencyHelper;
-        this.scheduler = scheduler;
     }
 
     public void executeCurrency() {
@@ -69,11 +68,11 @@ public class SubscriptionSender {
             }
         });
     }
-    public void scheduleCurrency(String cronHour) {
-        scheduler.scheduling(this::executeCurrency, cronHour);
-    }
-    public void scheduleWeather(String cronHour) {
-        scheduler.scheduling(this::executeWeather, cronHour);
-    }
+//    public void scheduleCurrency(String cronHour) {
+//        scheduler.scheduling(this::executeCurrency, cronHour);
+//    }
+//    public void scheduleWeather(String cronHour) {
+//        scheduler.scheduling(this::executeWeather, cronHour);
+//    }
 
 }
