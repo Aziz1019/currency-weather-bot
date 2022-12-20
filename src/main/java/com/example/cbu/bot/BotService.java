@@ -1,11 +1,7 @@
 package com.example.cbu.bot;
+
 import com.example.cbu.bot.command.Command;
 import com.example.cbu.bot.command.CommandContainer;
-
-import com.example.cbu.bot.command.impl.subscription.SubscriptionSender;
-import com.example.cbu.entity.UserSubscription;
-import com.example.cbu.service.UserSubscriptionService;
-import com.example.cbu.utils.keyboards.CurrencyKeyboard;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

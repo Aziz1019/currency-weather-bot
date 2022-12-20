@@ -2,7 +2,6 @@ package com.example.cbu.entity;
 
 import com.example.cbu.bot.BotState;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;

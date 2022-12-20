@@ -1,6 +1,7 @@
 package com.example.cbu.bot.command.impl.subscription;
 
 import com.example.cbu.bot.SubscriptionFeign;
+import com.example.cbu.bot.scheduler.MyScheduler;
 import com.example.cbu.entity.UserSubscription;
 import com.example.cbu.helper.CurrencyHelper;
 import com.example.cbu.helper.WheatherHelper;

@@ -1,11 +1,10 @@
-package com.example.cbu.bot.command.impl.subscription;
+package com.example.cbu.bot.scheduler;
 
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 
-@EnableScheduling
+
 @Component
 public class MyScheduler {
     private final TaskScheduler executor;
