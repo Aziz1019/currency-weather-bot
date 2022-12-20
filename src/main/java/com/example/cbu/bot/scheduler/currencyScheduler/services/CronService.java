@@ -1,4 +1,4 @@
-package com.example.cbu.bot.scheduler.currencyScheduler;
+package com.example.cbu.bot.scheduler.currencyScheduler.services;
 
 import com.example.cbu.bot.SubscriptionFeign;
 import com.example.cbu.entity.UserSubscription;

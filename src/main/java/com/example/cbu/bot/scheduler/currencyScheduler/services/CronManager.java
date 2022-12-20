@@ -1,5 +1,6 @@
-package com.example.cbu.bot.scheduler.currencyScheduler;
+package com.example.cbu.bot.scheduler.currencyScheduler.services;
 
+import com.example.cbu.bot.scheduler.events.SchedulerEventDTO;
 import com.example.cbu.bot.scheduler.currencyScheduler.mapper.CurrencySubscriptionMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,14 +16,12 @@ import javax.annotation.PostConstruct;
 public class CronManager {
     private final JdbcTemplate jdbcTemplate;
     protected final ApplicationEventPublisher publisher;
-    private final SchedulerEventListener schedulerEventListener;
 
     @Value("select user_id, currency_code, currency_time, first_name from user_subscription where currency_subscription = true")
     private String sql;
-    public CronManager(JdbcTemplate jdbcTemplate, ApplicationEventPublisher publisher, SchedulerEventListener schedulerEventListener) {
+    public CronManager(JdbcTemplate jdbcTemplate, ApplicationEventPublisher publisher) {
         this.jdbcTemplate = jdbcTemplate;
         this.publisher = publisher;
-        this.schedulerEventListener = schedulerEventListener;
     }
 
     @PostConstruct

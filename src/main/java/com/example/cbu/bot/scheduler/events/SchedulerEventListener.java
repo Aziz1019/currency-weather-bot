@@ -1,5 +1,6 @@
-package com.example.cbu.bot.scheduler.currencyScheduler;
+package com.example.cbu.bot.scheduler.events;
 
+import com.example.cbu.bot.scheduler.currencyScheduler.services.CronService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;

@@ -83,7 +83,7 @@ public class SwitchStatesCommand implements Command {
         String currencyTime = currencyFTime.substring(0, currencyFTime.indexOf(":"));
         if (subscriptionId.isPresent()) {
             subscriptionId.get().setCurrencySubscription(true);
-            subscriptionId.get().setCurrencyTime("*/2 * * * * *");
+            subscriptionId.get().setCurrencyTime("0 0 " + currencyTime + " * * * ");
             subscriptionService.save(subscriptionId.get());
             sendMessage.setText(getSelectedTime() + currencyFTime);
             sendMessage.setReplyMarkup(getMainMenuKeyboard());
@@ -96,7 +96,7 @@ public class SwitchStatesCommand implements Command {
         String weatherTime = weatherFTime.substring(0, weatherFTime.indexOf(":"));
         if (subscriptionId.isPresent()) {
             subscriptionId.get().setWeatherSubscription(true);
-            subscriptionId.get().setWeatherTime("*/1 * * * * *");
+            subscriptionId.get().setWeatherTime("0 0 " + weatherTime + " * * * ");
             subscriptionService.save(subscriptionId.get());
             sendMessage.setText(getSelectedTime() + weatherFTime);
             sendMessage.setReplyMarkup(getMainMenuKeyboard());
