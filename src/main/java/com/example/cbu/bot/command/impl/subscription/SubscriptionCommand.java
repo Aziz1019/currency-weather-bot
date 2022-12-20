@@ -6,6 +6,8 @@ import com.example.cbu.entity.UserSubscription;
 import com.example.cbu.helper.KeyBoardHelper;
 import com.example.cbu.service.UserService;
 import com.example.cbu.service.UserSubscriptionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -19,6 +21,16 @@ public class SubscriptionCommand implements Command {
         this.userService = userService;
         this.subscriptionService = subscriptionService;
     }
+
+    @Autowired
+    private Environment env;
+    public String getSelectWeatherTime(){
+        return env.getProperty("messages.subscribe.select-weather-time-message");
+    }
+    public String getSelectCurrencyTime(){
+        return env.getProperty("messages.subscribe.select-currency-time-message");
+    }
+
     @Override
     public void execute(Message message, SendMessage sendMessage) {
         sendMessage.setChatId(message.getChatId().toString());
@@ -37,7 +49,7 @@ public class SubscriptionCommand implements Command {
                             cityName,
                             true
                     )));
-                    sendMessage.setText("Har kuni ob-havo ma'lumotini olish uchun quyidagi vaqtlardan birini tanlang!");
+                    sendMessage.setText(getSelectWeatherTime());
                     sendMessage.setReplyMarkup(KeyBoardHelper.getTimeKeyboards());
                 }
                 case CURRENCY_DAILY_SENDING_HOURS -> {
@@ -51,7 +63,7 @@ public class SubscriptionCommand implements Command {
                             currencyCode,
                             true
                     )));
-                    sendMessage.setText("Har kuni Valyuta kursini olish uchun quyidagi vaqtlardan birini tanlang!");
+                    sendMessage.setText(getSelectCurrencyTime());
                     sendMessage.setReplyMarkup(KeyBoardHelper.getTimeKeyboards());
                 }
             }

@@ -10,6 +10,8 @@ import com.example.cbu.helper.WheatherHelper;
 import com.example.cbu.service.UserService;
 import com.example.cbu.service.UserSubscriptionService;
 import com.example.cbu.utils.keyboards.CurrencyKeyboard;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -27,6 +29,13 @@ public class SwitchStatesCommand implements Command {
     private final UserSubscriptionService subscriptionService;
     private final SubscriptionCommand subscriptionCommand;
     private final SubscriptionSender notificationSender;
+
+    @Autowired
+    private Environment env;
+    public String getSelectedTime(){
+        return env.getProperty("messages.subscribe.selected-time");
+    }
+
 
     public SwitchStatesCommand(UserService userService, CurrencyHelper currencyHelper, UserSubscriptionService subscriptionService, SubscriptionCommand subscriptionCommand, SubscriptionSender notificationSender) {
         this.userService = userService;
@@ -76,7 +85,7 @@ public class SwitchStatesCommand implements Command {
             subscriptionId.get().setCurrencySubscription(true);
             subscriptionId.get().setCurrencyTime(currencyTime);
             subscriptionService.save(subscriptionId.get());
-            sendMessage.setText("Tanlangan vaqt: " + currencyFTime);
+            sendMessage.setText(getSelectedTime() + currencyFTime);
             sendMessage.setReplyMarkup(getMainMenuKeyboard());
         }
         notificationSender.scheduleCurrency(currencyTime);
@@ -89,7 +98,7 @@ public class SwitchStatesCommand implements Command {
             subscriptionId.get().setWeatherSubscription(true);
             subscriptionId.get().setWeatherTime(weatherTime);
             subscriptionService.save(subscriptionId.get());
-            sendMessage.setText("Tanlangan vaqt: " + weatherFTime);
+            sendMessage.setText(getSelectedTime() + weatherFTime);
             sendMessage.setReplyMarkup(getMainMenuKeyboard());
         }
         notificationSender.scheduleWeather(weatherTime);

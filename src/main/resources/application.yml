@@ -4,3 +4,19 @@ bot:
 
 currency:
   url: https://cbu.uz/oz/arkhiv-kursov-valyut/json/
+
+messages:
+  start:
+    greeting-message: "Assalomu alaykum, botga xush kelibsiz!  "
+  subscribe:
+
+    select-city-message: "Ob-havo ga obuna bo'lish uchun quyidagi shaharlardan birini tanlang:"
+    select-weather-time-message: "Ob-havo haqida ma'lumot olish uchun quyidagi vaqtlardan birini tanlang:"
+
+    select-currency-message: "Valyuta kursiga obuna bo'lish uchun quyidagi valyutalardan birini tanlang:"
+    select-currency-time-message: "Har kuni valyuta kursi haqida ma'lumot olish uchun quyidagi vaqtlardan birini tanlang!"
+
+    selected-time: "Sizning tanlangan vaqtingiz: "
+  main:
+    choose-currency: "Valyutani tanlang:"
+    choose-city: "Shahar nomini kiriting yoki tanlang"

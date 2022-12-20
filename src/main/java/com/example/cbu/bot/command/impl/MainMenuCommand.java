@@ -3,6 +3,7 @@ package com.example.cbu.bot.command.impl;
 import com.example.cbu.bot.BotState;
 import com.example.cbu.bot.command.Command;
 import com.example.cbu.service.UserService;
+import com.example.cbu.utils.keyboards.MenuKeyboard;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -24,7 +25,7 @@ public class MainMenuCommand implements Command {
             user.setLastBotState(BotState.MAIN_MENU);
             userService.save(user);
         });
-        sendMessage.setText("🏠 Bosh sahifa");
+        sendMessage.setText(MenuKeyboard.BOSH_SA);
         sendMessage.setReplyMarkup(getKeyboard());
     }
 

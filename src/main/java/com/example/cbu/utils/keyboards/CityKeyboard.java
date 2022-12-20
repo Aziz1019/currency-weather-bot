@@ -9,7 +9,6 @@ public class CityKeyboard {
     public static final String NAVOIY = "Navoiy";
     public static final String QARSHI = "Qarshi";
     public static final String QASHQADARYO = "Qashqadaryo";
-    public static final String SIRDARYO = "Sirdaryo";
     public static final String JIZZAX = "Jizzax";
     public static final String FARGONA = "Fergana";
     public static final String ANDIJON = "Andijon";
