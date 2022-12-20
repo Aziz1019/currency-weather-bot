@@ -13,6 +13,10 @@ public class MyScheduler {
         this.executor = taskExecutor;
     }
     public void scheduling(final Runnable task, String cron) {
-        executor.schedule(task, new CronTrigger("*/" + cron + " * * * * * "));
+        // Every cron seconds
+//        executor.schedule(task, new CronTrigger("*/" + cron + " * * * * * "));
+
+        // Daily at cron time
+        executor.schedule(task, new CronTrigger("0 0 " + cron + " * * * "));
     }
 }
