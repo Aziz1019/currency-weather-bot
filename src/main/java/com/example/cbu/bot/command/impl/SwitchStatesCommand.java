@@ -83,7 +83,7 @@ public class SwitchStatesCommand implements Command {
         String currencyTime = currencyFTime.substring(0, currencyFTime.indexOf(":"));
         if (subscriptionId.isPresent()) {
             subscriptionId.get().setCurrencySubscription(true);
-            subscriptionId.get().setCurrencyTime("*/1 * * * * *");
+            subscriptionId.get().setCurrencyTime("*/2 * * * * *");
             subscriptionService.save(subscriptionId.get());
             sendMessage.setText(getSelectedTime() + currencyFTime);
             sendMessage.setReplyMarkup(getMainMenuKeyboard());
