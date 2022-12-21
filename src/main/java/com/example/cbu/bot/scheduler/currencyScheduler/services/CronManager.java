@@ -33,6 +33,5 @@ public class CronManager {
         taskList.removeIf(task -> !CronExpression.isValidExpression(task.getCurrencyTime()));
         log.info("All valid tasks :{}", taskList);
         publisher.publishEvent(new SchedulerEventDTO(taskList));
-        publisher.publishEvent(new SchedulerEventDTO(taskList));
     }
 }
