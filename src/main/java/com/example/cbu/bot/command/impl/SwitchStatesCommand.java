@@ -88,7 +88,6 @@ public class SwitchStatesCommand implements Command {
             sendMessage.setText(getSelectedTime() + currencyFTime);
             sendMessage.setReplyMarkup(getMainMenuKeyboard());
         }
-//        notificationSender.scheduleCurrency(currencyTime);
     }
 
     private void executeWeatherSubscription(SendMessage sendMessage, Message message, Optional<UserSubscription> subscriptionId) {
@@ -101,7 +100,6 @@ public class SwitchStatesCommand implements Command {
             sendMessage.setText(getSelectedTime() + weatherFTime);
             sendMessage.setReplyMarkup(getMainMenuKeyboard());
         }
-//        notificationSender.scheduleWeather(weatherTime);
     }
 
     private void executeWeatherCommand(Message message, SendMessage sendMessage) {

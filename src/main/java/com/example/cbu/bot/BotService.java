@@ -49,8 +49,8 @@ public class BotService extends TelegramLongPollingBot {
     private void handleMessage(Message message,HashMap<String, Command> commands, CommandContainer commandContainer ) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(message.getChatId().toString());
-        commandContainer.defineCommandButton(message.getText(), commands, message, sendMessage);
 
+        commandContainer.defineCommandButton(message.getText(), commands, message, sendMessage);
         try {
             execute(sendMessage);
             logger.info("Sent message \"{}\" to {}", message.getText(), message.getChatId());

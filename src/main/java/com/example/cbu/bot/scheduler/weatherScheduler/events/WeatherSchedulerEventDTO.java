@@ -1,4 +1,4 @@
-package com.example.cbu.bot.scheduler.weatherScheduler;
+package com.example.cbu.bot.scheduler.weatherScheduler.events;
 
 import com.example.cbu.entity.UserSubscription;
 import lombok.Getter;
