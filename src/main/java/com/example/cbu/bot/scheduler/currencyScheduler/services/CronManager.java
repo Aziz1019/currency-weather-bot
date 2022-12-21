@@ -1,6 +1,6 @@
 package com.example.cbu.bot.scheduler.currencyScheduler.services;
 
-import com.example.cbu.bot.scheduler.events.SchedulerEventDTO;
+import com.example.cbu.bot.scheduler.currencyScheduler.events.SchedulerEventDTO;
 import com.example.cbu.bot.scheduler.currencyScheduler.mapper.CurrencySubscriptionMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,4 +1,4 @@
-package com.example.cbu.bot.scheduler.events;
+package com.example.cbu.bot.scheduler.currencyScheduler.events;
 
 import com.example.cbu.entity.UserSubscription;
 import lombok.Getter;

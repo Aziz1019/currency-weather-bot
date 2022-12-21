@@ -1,6 +1,6 @@
 package com.example.cbu.bot.scheduler.weatherScheduler.services;
 
-import com.example.cbu.bot.scheduler.events.SchedulerEventDTO;
+import com.example.cbu.bot.scheduler.currencyScheduler.events.SchedulerEventDTO;
 import com.example.cbu.bot.scheduler.weatherScheduler.mapper.WeatherSubscriptionMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

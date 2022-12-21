@@ -1,4 +1,4 @@
-package com.example.cbu.bot.scheduler.events;
+package com.example.cbu.bot.scheduler.currencyScheduler.events;
 
 import com.example.cbu.bot.scheduler.currencyScheduler.services.CronService;
 import lombok.extern.slf4j.Slf4j;
