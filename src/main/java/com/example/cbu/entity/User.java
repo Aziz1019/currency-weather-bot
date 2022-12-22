@@ -14,7 +14,6 @@ public class User{
     @Id
     private Long userId;
     private String firstName;
-    private String lastName;
     private String username;
     private BotState lastBotState;
 
@@ -32,14 +31,6 @@ public class User{
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public String getUsername() {

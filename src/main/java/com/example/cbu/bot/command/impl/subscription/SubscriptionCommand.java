@@ -44,7 +44,6 @@ public class SubscriptionCommand implements Command {
                     subscriptionId.ifPresentOrElse(userSubscription -> setCityName(subscriptionId, cityName), () -> subscriptionService.save(new UserSubscription(
                             userEntity.get().getUserId(),
                             userEntity.get().getFirstName(),
-                            userEntity.get().getLastName(),
                             userEntity.get().getUsername(),
                             cityName,
                             true
@@ -56,12 +55,11 @@ public class SubscriptionCommand implements Command {
                     setBotState(userEntity, BotState.CURRENCY_SUBSCRIPTION);
                     String currencyCode = message.getText();
                     subscriptionId.ifPresentOrElse(userSubscription -> setCurrencyCode(subscriptionId, currencyCode), () -> subscriptionService.save(new UserSubscription(
+                            true,
                             userEntity.get().getUserId(),
                             userEntity.get().getFirstName(),
-                            userEntity.get().getLastName(),
                             userEntity.get().getUsername(),
-                            currencyCode,
-                            true
+                            currencyCode
                     )));
                     sendMessage.setText(getSelectCurrencyTime());
                     sendMessage.setReplyMarkup(KeyBoardHelper.getTimeKeyboards());

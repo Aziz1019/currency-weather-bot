@@ -29,7 +29,6 @@ public class StartCommand implements Command {
         User user = new User(
                 message.getFrom().getId(),
                 message.getFrom().getFirstName(),
-                message.getFrom().getLastName(),
                 message.getFrom().getUserName(),
                 BotState.START
         );

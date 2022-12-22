@@ -15,7 +15,6 @@ public class UserSubscription {
     @Id
     private Long userId;
     private String firstName;
-    private String lastName;
     private String username;
     private String cityName;
     private String currencyCode;
@@ -26,19 +25,19 @@ public class UserSubscription {
 
 
 
-    public UserSubscription(Long userId, String firstName, String lastName, String username, String cityName, Boolean weatherSubscription) {
+    public UserSubscription(Long userId, String firstName, String username, String cityName, Boolean weatherSubscription) {
         this.userId = userId;
         this.firstName = firstName;
-        this.lastName = lastName;
         this.username = username;
         this.cityName = cityName;
         this.weatherSubscription = weatherSubscription;
     }
 
-    public UserSubscription(Long userId, String firstName, String username, Boolean currencySubscription) {
+    public UserSubscription(Boolean currencySubscription, Long userId, String firstName, String username, String countryCode) {
+        this.currencySubscription = currencySubscription;
         this.userId = userId;
         this.firstName = firstName;
         this.username = username;
-        this.currencySubscription = currencySubscription;
+        this.currencyCode = countryCode;
     }
 }
