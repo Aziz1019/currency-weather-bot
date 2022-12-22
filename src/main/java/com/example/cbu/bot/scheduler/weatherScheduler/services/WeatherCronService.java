@@ -2,7 +2,7 @@ package com.example.cbu.bot.scheduler.weatherScheduler.services;
 
 import com.example.cbu.bot.SubscriptionFeign;
 import com.example.cbu.entity.UserSubscription;
-import com.example.cbu.helper.WheatherHelper;
+import com.example.cbu.helper.WeatherHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
@@ -17,15 +17,20 @@ import java.time.LocalDateTime;
 @Service
 @Slf4j
 public class WeatherCronService implements SchedulingConfigurer {
+    private final WeatherHelper weatherHelper;
     @Autowired
     SubscriptionFeign subscriptionFeign;
+
+    public WeatherCronService(WeatherHelper weatherHelper) {
+        this.weatherHelper = weatherHelper;
+    }
 
     public ScheduledTaskRegistrar createScheduler(UserSubscription userSubscription) {
         SendMessage sendMessage = new SendMessage();
         Runnable runnable = () -> {
             log.info("Start process at : {}", LocalDateTime.now());
             sendMessage.setChatId(userSubscription.getUserId().toString());
-            sendMessage.setText(WheatherHelper.getWeather(userSubscription.getCityName()).toString());
+            sendMessage.setText(weatherHelper.getWeather(userSubscription.getCityName()).toString());
             subscriptionFeign.sendMessage(sendMessage);
         };
         CronTask cronTask = createCronTask(runnable, userSubscription.getWeatherTime());

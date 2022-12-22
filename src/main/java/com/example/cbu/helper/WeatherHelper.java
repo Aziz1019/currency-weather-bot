@@ -4,9 +4,11 @@ import com.example.cbu.model.WeatherDTO;
 import com.github.prominence.openweathermap.api.OpenWeatherMapClient;
 import com.github.prominence.openweathermap.api.enums.UnitSystem;
 import com.github.prominence.openweathermap.api.model.weather.Weather;
+import org.springframework.stereotype.Component;
 
-public class WheatherHelper {
-    public static WeatherDTO getWeather(String city) {
+@Component
+public class WeatherHelper {
+    public WeatherDTO getWeather(String city) {
 
         OpenWeatherMapClient openWeatherClient = new OpenWeatherMapClient("0a9cf92a59f4148067c0a2b4cba62047");
 

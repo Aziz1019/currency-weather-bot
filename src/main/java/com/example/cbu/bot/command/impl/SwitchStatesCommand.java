@@ -1,12 +1,11 @@
 package com.example.cbu.bot.command.impl;
 
 import com.example.cbu.bot.command.Command;
-import com.example.cbu.bot.command.impl.subscription.SubscriptionSender;
 import com.example.cbu.bot.command.impl.subscription.SubscriptionCommand;
 import com.example.cbu.entity.User;
 import com.example.cbu.entity.UserSubscription;
 import com.example.cbu.helper.CurrencyHelper;
-import com.example.cbu.helper.WheatherHelper;
+import com.example.cbu.helper.WeatherHelper;
 import com.example.cbu.service.UserService;
 import com.example.cbu.service.UserSubscriptionService;
 import com.example.cbu.utils.keyboards.CurrencyKeyboard;
@@ -28,21 +27,25 @@ public class SwitchStatesCommand implements Command {
     private final CurrencyHelper currencyHelper;
     private final UserSubscriptionService subscriptionService;
     private final SubscriptionCommand subscriptionCommand;
-    private final SubscriptionSender notificationSender;
-
+    private final WeatherHelper weatherHelper;
     @Autowired
     private Environment env;
-    public String getSelectedTime(){
+
+    public String getSelectedTime() {
         return env.getProperty("messages.subscribe.selected-time");
     }
 
+    public String getSelectedTimeForTest(Environment environment) {
+        return environment.getProperty("messages.subscribe.selected-time");
+    }
 
-    public SwitchStatesCommand(UserService userService, CurrencyHelper currencyHelper, UserSubscriptionService subscriptionService, SubscriptionCommand subscriptionCommand, SubscriptionSender notificationSender) {
+
+    public SwitchStatesCommand(UserService userService, CurrencyHelper currencyHelper, UserSubscriptionService subscriptionService, SubscriptionCommand subscriptionCommand, WeatherHelper weatherHelper) {
         this.userService = userService;
         this.currencyHelper = currencyHelper;
         this.subscriptionService = subscriptionService;
         this.subscriptionCommand = subscriptionCommand;
-        this.notificationSender = notificationSender;
+        this.weatherHelper = weatherHelper;
     }
 
     @Override
@@ -70,7 +73,7 @@ public class SwitchStatesCommand implements Command {
         subscriptionCommand.execute(message, sendMessage);
     }
 
-    public void executeCurrencyCommand(Message message, SendMessage sendMessage){
+    public void executeCurrencyCommand(Message message, SendMessage sendMessage) {
         List<String> currencyButtons = CurrencyKeyboard.getCurrencyButtons();
         HashMap<String, String> flags = CurrencyKeyboard.getFlags();
         if (currencyButtons.contains(message.getText())) {
@@ -78,7 +81,7 @@ public class SwitchStatesCommand implements Command {
         }
     }
 
-    private void executeCurrencySubscription(SendMessage sendMessage, Message message, Optional<UserSubscription> subscriptionId) {
+    public void executeCurrencySubscription(SendMessage sendMessage, Message message, Optional<UserSubscription> subscriptionId) {
         String currencyFTime = message.getText();
         String currencyTime = currencyFTime.substring(0, currencyFTime.indexOf(":"));
         if (subscriptionId.isPresent()) {
@@ -90,7 +93,20 @@ public class SwitchStatesCommand implements Command {
         }
     }
 
-    private void executeWeatherSubscription(SendMessage sendMessage, Message message, Optional<UserSubscription> subscriptionId) {
+    public void executeCurrencySubscription(SendMessage sendMessage, Message message, Optional<UserSubscription> subscriptionId, Environment env) {
+        String currencyFTime = message.getText();
+        String currencyTime = currencyFTime.substring(0, currencyFTime.indexOf(":"));
+        if (subscriptionId.isPresent()) {
+            subscriptionId.get().setCurrencySubscription(true);
+            subscriptionId.get().setCurrencyTime("0 0 " + currencyTime + " * * * ");
+            subscriptionService.save(subscriptionId.get());
+            sendMessage.setText(getSelectedTimeForTest(env) + currencyFTime);
+            sendMessage.setReplyMarkup(getMainMenuKeyboard());
+        }
+    }
+
+
+    public void executeWeatherSubscription(SendMessage sendMessage, Message message, Optional<UserSubscription> subscriptionId) {
         String weatherFTime = message.getText();
         String weatherTime = weatherFTime.substring(0, weatherFTime.indexOf(":"));
         if (subscriptionId.isPresent()) {
@@ -102,9 +118,21 @@ public class SwitchStatesCommand implements Command {
         }
     }
 
-    private void executeWeatherCommand(Message message, SendMessage sendMessage) {
+    public void executeWeatherSubscription(SendMessage sendMessage, Message message, Optional<UserSubscription> subscriptionId, Environment env) {
+        String weatherFTime = message.getText();
+        String weatherTime = weatherFTime.substring(0, weatherFTime.indexOf(":"));
+        if (subscriptionId.isPresent()) {
+            subscriptionId.get().setWeatherSubscription(true);
+            subscriptionId.get().setWeatherTime("0 0 " + weatherTime + " * * * ");
+            subscriptionService.save(subscriptionId.get());
+            sendMessage.setText(getSelectedTimeForTest(env) + weatherFTime);
+            sendMessage.setReplyMarkup(getMainMenuKeyboard());
+        }
+    }
+
+    public void executeWeatherCommand(Message message, SendMessage sendMessage) {
         String city = message.getText();
-        sendMessage.setText(WheatherHelper.getWeather(city).toString());
+        sendMessage.setText(weatherHelper.getWeather(city).toString());
         sendMessage.setReplyMarkup(getCityKeyboard());
     }
 

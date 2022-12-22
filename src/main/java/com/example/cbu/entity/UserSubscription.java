@@ -34,4 +34,11 @@ public class UserSubscription {
         this.cityName = cityName;
         this.weatherSubscription = weatherSubscription;
     }
+
+    public UserSubscription(Long userId, String firstName, String username, Boolean currencySubscription) {
+        this.userId = userId;
+        this.firstName = firstName;
+        this.username = username;
+        this.currencySubscription = currencySubscription;
+    }
 }
