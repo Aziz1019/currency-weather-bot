@@ -1,7 +1,7 @@
 package com.example.cbu.bot.scheduler.weatherScheduler.services;
 
 import com.example.cbu.bot.SubscriptionFeign;
-import com.example.cbu.entity.UserSubscription;
+import com.example.cbu.entity.real.UserSubscription;
 import com.example.cbu.helper.WeatherHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

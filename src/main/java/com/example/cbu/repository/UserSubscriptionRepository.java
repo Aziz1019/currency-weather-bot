@@ -1,5 +1,5 @@
 package com.example.cbu.repository;
-import com.example.cbu.entity.UserSubscription;
+import com.example.cbu.entity.real.UserSubscription;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;

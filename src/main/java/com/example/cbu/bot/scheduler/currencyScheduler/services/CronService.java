@@ -1,7 +1,7 @@
 package com.example.cbu.bot.scheduler.currencyScheduler.services;
 
 import com.example.cbu.bot.SubscriptionFeign;
-import com.example.cbu.entity.UserSubscription;
+import com.example.cbu.entity.real.UserSubscription;
 import com.example.cbu.helper.CurrencyHelper;
 import com.example.cbu.utils.keyboards.CurrencyKeyboard;
 import lombok.extern.slf4j.Slf4j;

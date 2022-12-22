@@ -1,23 +1,16 @@
 package com.example.cbu;
 
 import com.example.cbu.bot.command.impl.SwitchStatesCommand;
-import com.example.cbu.entity.UserSubscription;
-import com.example.cbu.repository.UserSubscriptionRepository;
+import com.example.cbu.entity.real.UserSubscription;
 import com.example.cbu.service.UserSubscriptionService;
-import com.example.cbu.service.impl.UserSubscriptionImpl;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.env.Environment;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;

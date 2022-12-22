@@ -1,6 +1,6 @@
 package com.example.cbu.bot.scheduler.currencyScheduler.mapper;
 
-import com.example.cbu.entity.UserSubscription;
+import com.example.cbu.entity.real.UserSubscription;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

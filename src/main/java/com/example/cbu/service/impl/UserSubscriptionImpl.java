@@ -1,6 +1,6 @@
 package com.example.cbu.service.impl;
 
-import com.example.cbu.entity.UserSubscription;
+import com.example.cbu.entity.real.UserSubscription;
 import com.example.cbu.repository.UserSubscriptionRepository;
 import com.example.cbu.service.UserSubscriptionService;
 import lombok.RequiredArgsConstructor;

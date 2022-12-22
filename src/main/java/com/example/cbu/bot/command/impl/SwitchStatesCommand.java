@@ -2,8 +2,8 @@ package com.example.cbu.bot.command.impl;
 
 import com.example.cbu.bot.command.Command;
 import com.example.cbu.bot.command.impl.subscription.SubscriptionCommand;
-import com.example.cbu.entity.User;
-import com.example.cbu.entity.UserSubscription;
+import com.example.cbu.entity.real.User;
+import com.example.cbu.entity.real.UserSubscription;
 import com.example.cbu.helper.CurrencyHelper;
 import com.example.cbu.helper.WeatherHelper;
 import com.example.cbu.service.UserService;

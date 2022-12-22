@@ -1,6 +1,6 @@
 package com.example.cbu.service;
 
-import com.example.cbu.entity.User;
+import com.example.cbu.entity.real.User;
 
 import java.util.Optional;
 

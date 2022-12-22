@@ -1,4 +1,4 @@
-package com.example.cbu.entity;
+package com.example.cbu.entity.real;
 
 import com.example.cbu.bot.BotState;
 import lombok.AllArgsConstructor;

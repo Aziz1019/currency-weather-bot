@@ -2,7 +2,7 @@ package com.example.cbu.bot.command.impl.subscription;
 
 import com.example.cbu.bot.BotState;
 import com.example.cbu.bot.command.Command;
-import com.example.cbu.entity.User;
+import com.example.cbu.entity.real.User;
 import com.example.cbu.helper.KeyBoardHelper;
 import com.example.cbu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
